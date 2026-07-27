@@ -40,6 +40,9 @@ android {
 }
 
 dependencies {
+    // GridLayout (required by LockActivity PIN keypad)
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+
     // AndroidX Core
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core:1.12.0'

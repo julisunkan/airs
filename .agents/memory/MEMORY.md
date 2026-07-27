@@ -1,0 +1,1 @@
+- [Android project completeness](android-project-gaps.md) — gaps found and fixed when scanning the AI Resume Builder codebase

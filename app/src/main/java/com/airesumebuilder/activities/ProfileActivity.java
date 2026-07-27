@@ -27,13 +27,14 @@ public class ProfileActivity extends AppCompatActivity {
     private PreferenceManager prefs;
     private Profile           activeProfile;
 
+    private TextView tvName, tvHeadline;
+
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler         handler  = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Reuse the settings card layout for simplicity; a dedicated layout can be added later
         setContentView(R.layout.activity_profile_view);
 
         profileRepo = new ProfileRepository(this);
@@ -42,6 +43,15 @@ public class ProfileActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
+
+        tvName     = findViewById(R.id.tvName);
+        tvHeadline = findViewById(R.id.tvHeadline);
+
+        MaterialButton btnEdit = findViewById(R.id.btnEditProfile);
+        if (btnEdit != null) {
+            btnEdit.setOnClickListener(v ->
+                    startActivity(new Intent(this, EditProfileActivity.class)));
+        }
     }
 
     @Override
@@ -59,7 +69,22 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateUi() {
-        // UI update happens here when layout is wired
+        if (tvName == null) return;
+
+        if (activeProfile != null) {
+            tvName.setText(activeProfile.getFullName());
+
+            if (tvHeadline != null) {
+                String headline = activeProfile.getHeadline();
+                tvHeadline.setText(headline != null && !headline.isEmpty()
+                        ? headline : activeProfile.getLocationString());
+            }
+        } else {
+            tvName.setText(getString(R.string.my_profile));
+            if (tvHeadline != null) {
+                tvHeadline.setText("Tap Edit to create your profile");
+            }
+        }
     }
 
     @Override

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Email / Cover Letter Tones -->
+    <string-array name="tones">
+        <item>Professional</item>
+        <item>Friendly</item>
+        <item>Formal</item>
+        <item>Casual</item>
+        <item>Enthusiastic</item>
+        <item>Concise</item>
+        <item>Persuasive</item>
+        <item>Empathetic</item>
+        <item>Confident</item>
+        <item>Diplomatic</item>
+    </string-array>
+
+    <!-- Content Lengths -->
+    <string-array name="lengths">
+        <item>Short</item>
+        <item>Medium</item>
+        <item>Long</item>
+    </string-array>
+
+    <!-- Supported Languages for AI generation -->
+    <string-array name="languages">
+        <item>English</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Portuguese</item>
+        <item>Arabic</item>
+        <item>Hindi</item>
+        <item>Chinese</item>
+        <item>Japanese</item>
+    </string-array>
+
+    <!-- Groq AI Models -->
+    <string-array name="ai_models">
+        <item>llama-3.3-70b-versatile</item>
+        <item>llama-3.1-70b-versatile</item>
+        <item>llama-3.1-8b-instant</item>
+        <item>gemma2-9b-it</item>
+        <item>mixtral-8x7b-32768</item>
+    </string-array>
+
+    <!-- Resume Templates -->
+    <string-array name="resume_templates">
+        <item>Modern</item>
+        <item>Professional</item>
+        <item>Executive</item>
+        <item>Minimal</item>
+        <item>Corporate</item>
+        <item>Creative</item>
+        <item>Academic</item>
+        <item>Engineering</item>
+        <item>Medical</item>
+        <item>Finance</item>
+        <item>Sales</item>
+        <item>Legal</item>
+        <item>Government</item>
+        <item>Student</item>
+        <item>Internship</item>
+        <item>Timeline</item>
+        <item>One Page</item>
+        <item>Two Page</item>
+        <item>ATS Simple</item>
+        <item>Dark Theme</item>
+        <item>Elegant</item>
+    </string-array>
+
+    <!-- Interview Question Types -->
+    <string-array name="interview_types">
+        <item>HR / Behavioural</item>
+        <item>Technical</item>
+        <item>Coding Questions</item>
+        <item>STAR Responses</item>
+        <item>Management</item>
+        <item>General</item>
+    </string-array>
+
+    <!-- Theme options -->
+    <string-array name="theme_options">
+        <item>@string/theme_system</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_amoled</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+        <item>amoled</item>
+    </string-array>
+
+</resources>

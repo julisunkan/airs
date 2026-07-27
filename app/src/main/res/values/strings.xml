@@ -233,6 +233,41 @@
     <string name="empty_favorites_title">No Favorites</string>
     <string name="empty_favorites_body">Star resumes to find them here quickly.</string>
 
+    <!-- Preferences (preferences.xml keys) -->
+    <string name="groq_api_settings">Groq API Settings</string>
+    <string name="enter_api_key">Enter API Key</string>
+    <string name="default_settings">Default Settings</string>
+    <string name="default_tone">Default Tone</string>
+    <string name="default_length">Default Length</string>
+    <string name="default_language">Default Language</string>
+
+    <!-- Templates -->
+    <string name="template_corporate">Corporate</string>
+    <string name="template_engineering">Engineering</string>
+    <string name="template_medical">Medical</string>
+    <string name="template_finance">Finance</string>
+    <string name="template_sales">Sales</string>
+    <string name="template_legal">Legal</string>
+    <string name="template_government">Government</string>
+    <string name="template_student">Student</string>
+    <string name="template_internship">Internship</string>
+    <string name="template_timeline">Timeline</string>
+    <string name="template_one_page">One Page</string>
+    <string name="template_two_page">Two Page</string>
+    <string name="template_dark">Dark Theme</string>
+    <string name="template_elegant">Elegant</string>
+    <string name="use_template">Use Template</string>
+
+    <!-- Analytics extras -->
+    <string name="jobs_tracked">Jobs Tracked</string>
+
+    <!-- Backup -->
+    <string name="export_backup">Export Backup</string>
+    <string name="import_backup">Import Backup</string>
+    <string name="backup_saved">Backup saved to Documents</string>
+    <string name="backup_restored">Data restored successfully</string>
+    <string name="backup_failed">Backup failed. Please try again.</string>
+
     <!-- Errors -->
     <string name="error_empty_field">This field cannot be empty</string>
     <string name="error_invalid_email">Enter a valid email address</string>

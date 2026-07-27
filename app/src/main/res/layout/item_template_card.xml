@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.AIResumeBuilder.Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:strokeColor="?attr/colorSurfaceVariant"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Template preview thumbnail (coloured block) -->
+        <FrameLayout
+            android:id="@+id/flPreview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/bg_card_gradient"
+            android:layout_marginBottom="12dp">
+
+            <!-- Template name overlay -->
+            <TextView
+                android:id="@+id/tvTemplateEmoji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="📄"
+                android:textSize="40sp" />
+        </FrameLayout>
+
+        <!-- Template Name -->
+        <TextView
+            android:id="@+id/tvTemplateName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modern"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:textColor="?attr/colorOnSurface" />
+
+        <!-- Template Description -->
+        <TextView
+            android:id="@+id/tvTemplateDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clean and contemporary"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:layout_marginTop="2dp" />
+
+        <!-- Use Template Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUseTemplate"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/use_template"
+            android:layout_marginTop="12dp"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
