@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
     private void confirmDelete(Resume resume) {
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Delete Resume")
-                .setMessage("Delete "" + resume.getTitle() + ""? This cannot be undone.")
+                .setMessage("Delete \"" + resume.getTitle() + "\"? This cannot be undone.")
                 .setPositiveButton("Delete", (d, w) -> {
                     executor.execute(() -> {
                         resumeRepo.delete(resume.getId());
