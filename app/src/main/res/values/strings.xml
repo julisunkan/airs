@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AI Resume Builder</string>
+
+    <!-- Dashboard -->
+    <string name="create_resume">Create Resume</string>
+    <string name="my_resumes">My Resumes</string>
+    <string name="templates">Templates</string>
+    <string name="ai_review">AI Review</string>
+    <string name="cover_letter">Cover Letter</string>
+    <string name="interview_prep">Interview Prep</string>
+    <string name="career_coach">Career Coach</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="job_tracker">Job Tracker</string>
+    <string name="analytics">Analytics</string>
+    <string name="favorites">Favorites</string>
+    <string name="recent_resumes">Recent Resumes</string>
+    <string name="settings">Settings</string>
+    <string name="help">Help</string>
+    <string name="about">About</string>
+
+    <!-- Common -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="add">Add</string>
+    <string name="done">Done</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="generate">Generate</string>
+    <string name="copy">Copy</string>
+    <string name="share">Share</string>
+    <string name="export">Export</string>
+    <string name="import_text">Import</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="retry">Retry</string>
+    <string name="close">Close</string>
+    <string name="confirm">Confirm</string>
+    <string name="loading">Loading…</string>
+    <string name="generating">Generating…</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="warning">Warning</string>
+    <string name="preview">Preview</string>
+    <string name="download">Download</string>
+    <string name="print">Print</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="address">Address</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="state_label">State</string>
+    <string name="website">Website</string>
+    <string name="notes">Notes</string>
+    <string name="status">Status</string>
+    <string name="date">Date</string>
+    <string name="untitled">Untitled</string>
+    <string name="unknown">Unknown</string>
+    <string name="none">None</string>
+
+    <!-- Profile -->
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="professional_headline">Professional Headline</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="github">GitHub</string>
+    <string name="portfolio_url">Portfolio URL</string>
+    <string name="personal_bio">Personal Bio</string>
+    <string name="date_of_birth">Date of Birth (Optional)</string>
+    <string name="my_profile">My Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="select_photo">Select Photo</string>
+    <string name="remove_photo">Remove Photo</string>
+
+    <!-- Resume -->
+    <string name="resume_title">Resume Title</string>
+    <string name="personal_info">Personal Information</string>
+    <string name="professional_summary">Professional Summary</string>
+    <string name="career_objective">Career Objective</string>
+    <string name="education">Education</string>
+    <string name="experience">Experience</string>
+    <string name="skills">Skills</string>
+    <string name="projects">Projects</string>
+    <string name="certifications">Certifications</string>
+    <string name="awards">Awards</string>
+    <string name="volunteer">Volunteer Experience</string>
+    <string name="languages">Languages</string>
+    <string name="interests">Interests</string>
+    <string name="hobbies">Hobbies</string>
+    <string name="references">References</string>
+    <string name="publications">Publications</string>
+    <string name="conferences">Conferences</string>
+    <string name="achievements">Achievements</string>
+    <string name="military_service">Military Service</string>
+    <string name="memberships">Professional Memberships</string>
+    <string name="custom_section">Custom Section</string>
+    <string name="new_resume">New Resume</string>
+    <string name="resume_saved">Resume saved</string>
+    <string name="delete_resume_confirm">Delete this resume? This cannot be undone.</string>
+    <string name="no_resumes">No resumes yet. Tap + to create one.</string>
+    <string name="resume_builder">Resume Builder</string>
+    <string name="add_section">Add Section</string>
+    <string name="reorder_sections">Reorder Sections</string>
+    <string name="auto_save">Auto Save</string>
+
+    <!-- AI -->
+    <string name="ai_features">AI Features</string>
+    <string name="generate_with_ai">Generate with AI</string>
+    <string name="improve_with_ai">Improve with AI</string>
+    <string name="rewrite_with_ai">Rewrite with AI</string>
+    <string name="api_key">API Key</string>
+    <string name="groq_api_key">Groq API Key</string>
+    <string name="api_key_hint">Enter your Groq API key</string>
+    <string name="api_key_saved">API key saved securely</string>
+    <string name="api_key_required">API key required. Go to Settings → AI Settings to add one.</string>
+    <string name="invalid_api_key">Invalid API key. Please check and try again.</string>
+    <string name="api_error">AI service error. Please try again.</string>
+    <string name="no_internet">No internet connection. Please check your network.</string>
+    <string name="timeout_error">Request timed out. Please try again.</string>
+    <string name="model_selection">Model Selection</string>
+    <string name="temperature">Temperature</string>
+    <string name="max_tokens">Max Tokens</string>
+    <string name="streaming">Streaming Responses</string>
+    <string name="test_api_key">Test API Key</string>
+    <string name="delete_api_key">Delete API Key</string>
+    <string name="show_api_key">Show API Key</string>
+    <string name="ai_settings">AI Settings</string>
+    <string name="type_message">Type a message…</string>
+    <string name="send">Send</string>
+    <string name="ai_is_typing">AI is typing…</string>
+
+    <!-- Templates -->
+    <string name="select_template">Select Template</string>
+    <string name="template_modern">Modern</string>
+    <string name="template_professional">Professional</string>
+    <string name="template_executive">Executive</string>
+    <string name="template_minimal">Minimal</string>
+    <string name="template_creative">Creative</string>
+    <string name="template_academic">Academic</string>
+    <string name="template_ats_simple">ATS Simple</string>
+
+    <!-- Job Tracker -->
+    <string name="add_job">Add Job</string>
+    <string name="company">Company</string>
+    <string name="position">Position</string>
+    <string name="application_date">Application Date</string>
+    <string name="interview_date">Interview Date</string>
+    <string name="job_status_applied">Applied</string>
+    <string name="job_status_interview">Interview</string>
+    <string name="job_status_offer">Offer</string>
+    <string name="job_status_rejected">Rejected</string>
+    <string name="job_status_withdrawn">Withdrawn</string>
+    <string name="no_jobs">No jobs tracked yet.</string>
+
+    <!-- Settings -->
+    <string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_amoled">AMOLED</string>
+    <string name="theme_system">Follow System</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="font_size">Font Size</string>
+    <string name="security">Security</string>
+    <string name="pin_lock">PIN Lock</string>
+    <string name="biometric_unlock">Biometric Unlock</string>
+    <string name="auto_lock">Auto Lock</string>
+    <string name="backup_restore">Backup &amp; Restore</string>
+    <string name="notifications">Notifications</string>
+    <string name="language">Language</string>
+    <string name="developer_options">Developer Options</string>
+    <string name="licenses">Licenses</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="version">Version</string>
+
+    <!-- Security / Lock -->
+    <string name="enter_pin">Enter PIN</string>
+    <string name="create_pin">Create PIN</string>
+    <string name="confirm_pin">Confirm PIN</string>
+    <string name="pin_mismatch">PINs do not match. Try again.</string>
+    <string name="pin_set">PIN set successfully</string>
+    <string name="biometric_prompt_title">Unlock AI Resume Builder</string>
+    <string name="biometric_prompt_subtitle">Use your biometric to unlock</string>
+    <string name="biometric_not_enrolled">No biometric enrolled on this device.</string>
+    <string name="unlock_with_pin">Use PIN Instead</string>
+    <string name="wrong_pin">Wrong PIN. Try again.</string>
+
+    <!-- PDF -->
+    <string name="export_pdf">Export PDF</string>
+    <string name="export_docx">Export DOCX</string>
+    <string name="export_txt">Export TXT</string>
+    <string name="export_html">Export HTML</string>
+    <string name="export_json">Export JSON</string>
+    <string name="pdf_saved">PDF saved to Downloads</string>
+    <string name="pdf_error">Failed to generate PDF</string>
+    <string name="page_size_a4">A4</string>
+    <string name="page_size_letter">Letter</string>
+
+    <!-- Analytics -->
+    <string name="total_resumes">Total Resumes</string>
+    <string name="ai_usage">AI Requests Used</string>
+    <string name="exports_count">Exports</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="completion_rate">Completion Rate</string>
+
+    <!-- Cover Letter -->
+    <string name="job_description">Job Description</string>
+    <string name="hiring_manager">Hiring Manager</string>
+    <string name="tone">Tone</string>
+    <string name="length">Length</string>
+    <string name="generate_cover_letter">Generate Cover Letter</string>
+
+    <!-- Interview Prep -->
+    <string name="question_type">Question Type</string>
+    <string name="hr_questions">HR Questions</string>
+    <string name="technical_questions">Technical Questions</string>
+    <string name="behavioral_questions">Behavioral Questions</string>
+    <string name="star_responses">STAR Responses</string>
+    <string name="mock_interview">Mock Interview</string>
+
+    <!-- Empty States -->
+    <string name="empty_resumes_title">No Resumes Yet</string>
+    <string name="empty_resumes_body">Create your first resume and let AI help you shine.</string>
+    <string name="empty_jobs_title">No Jobs Tracked</string>
+    <string name="empty_jobs_body">Start tracking your job applications here.</string>
+    <string name="empty_favorites_title">No Favorites</string>
+    <string name="empty_favorites_body">Star resumes to find them here quickly.</string>
+
+    <!-- Errors -->
+    <string name="error_empty_field">This field cannot be empty</string>
+    <string name="error_invalid_email">Enter a valid email address</string>
+    <string name="error_database">Database error. Please restart the app.</string>
+    <string name="something_went_wrong">Something went wrong. Please try again.</string>
+
+    <!-- Misc -->
+    <string name="undo">Undo</string>
+    <string name="deleted">Deleted</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="select_all">Select All</string>
+    <string name="clear_all">Clear All</string>
+    <string name="confirm_clear_all">Clear all data? This cannot be undone.</string>
+    <string name="refresh">Refresh</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="score">Score</string>
+    <string name="ats_score">ATS Score</string>
+    <string name="keyword_score">Keyword Score</string>
+    <string name="overall_score">Overall Score</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="improvement_tips">Improvement Tips</string>
+</resources>

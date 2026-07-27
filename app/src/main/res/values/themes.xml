@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base Application Theme (Light) -->
+    <style name="Theme.AIResumeBuilder" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiary_container</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.AIResumeBuilder.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.AIResumeBuilder.LargeComponent</item>
+    </style>
+
+    <!-- Dark Theme -->
+    <style name="Theme.AIResumeBuilder.Dark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#A8C8FF</item>
+        <item name="colorOnPrimary">#003063</item>
+        <item name="colorPrimaryContainer">#0043A8</item>
+        <item name="colorOnPrimaryContainer">#D3E4FF</item>
+        <item name="colorSecondary">#BBC8DA</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <!-- AMOLED Theme -->
+    <style name="Theme.AIResumeBuilder.AMOLED" parent="Theme.AIResumeBuilder.Dark">
+        <item name="colorSurface">@color/surface_amoled</item>
+        <item name="android:colorBackground">@color/background_amoled</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="Theme.AIResumeBuilder.Splash" parent="Theme.AIResumeBuilder">
+        <item name="android:windowBackground">@color/primary</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!-- Shape Appearances -->
+    <style name="ShapeAppearance.AIResumeBuilder.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ShapeAppearance.AIResumeBuilder.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <!-- Card Style -->
+    <style name="Widget.AIResumeBuilder.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
+    <!-- Bottom Navigation -->
+    <style name="Widget.AIResumeBuilder.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+
+    <!-- FAB -->
+    <style name="Widget.AIResumeBuilder.FAB" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearance">@style/ShapeAppearance.AIResumeBuilder.LargeComponent</item>
+    </style>
+
+</resources>

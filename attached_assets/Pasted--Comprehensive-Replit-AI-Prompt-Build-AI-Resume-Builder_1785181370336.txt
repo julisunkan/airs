@@ -1,0 +1,1188 @@
+# Comprehensive Replit AI Prompt: Build "AI Resume Builder" Android App
+
+## Role
+
+You are a senior Android Engineer, UI/UX Designer, Java developer, SQLite database architect, AI integration specialist, and software architect.
+
+Build a production-quality Android application named **AI Resume Builder** using modern Android development best practices.
+
+The application must be clean, modular, scalable, maintainable, and fully documented.
+
+Do not generate placeholder code unless absolutely necessary.
+
+The app should be complete and ready for further development.
+
+---
+
+# Tech Stack
+
+Language:
+
+* Java
+
+IDE:
+
+* Android Studio (latest stable)
+
+Minimum SDK:
+
+* API 26 (Android 8)
+
+Target SDK:
+
+* Latest stable
+
+Architecture:
+
+* MVVM
+
+Local Database:
+
+* SQLite
+
+Networking:
+
+* Retrofit
+* OkHttp
+
+JSON:
+
+* Gson
+
+Image Loading:
+
+* Glide
+
+PDF:
+
+* Android PdfDocument
+* Optional support for iText
+
+Security:
+
+* Android Keystore
+* EncryptedSharedPreferences
+
+Preferences:
+
+* Jetpack DataStore (preferred) or SharedPreferences
+
+Dependency Injection:
+
+* Manual or Hilt (optional)
+
+Material Design:
+
+* Material Design 3
+
+Navigation:
+
+* Navigation Component
+
+Version Control:
+
+* Git-ready
+
+---
+
+# Project Name
+
+AI Resume Builder
+
+Package
+
+com.airesumebuilder
+
+---
+
+# Design Requirements
+
+Create a beautiful modern interface.
+
+Style:
+
+Material Design 3
+
+Rounded Cards
+
+Smooth Animations
+
+Responsive Layout
+
+Dark Mode
+
+AMOLED Mode
+
+Light Mode
+
+Dynamic Colors
+
+Modern Dashboard
+
+Minimal Design
+
+Professional Color Palette
+
+Glassmorphism where appropriate
+
+Support portrait and landscape.
+
+---
+
+# Authentication
+
+No online account is required.
+
+Users can use the app offline.
+
+Provide:
+
+Guest Mode
+
+Profile Creation
+
+PIN Lock
+
+Fingerprint Unlock
+
+Face Unlock (supported devices)
+
+---
+
+# Home Dashboard
+
+Dashboard cards:
+
+Create Resume
+
+My Resumes
+
+Templates
+
+AI Resume Review
+
+Cover Letter
+
+Interview Prep
+
+Career Coach
+
+Portfolio Generator
+
+Job Tracker
+
+Analytics
+
+Favorites
+
+Recent Resumes
+
+Settings
+
+Help
+
+About
+
+Each card should have icons and smooth animations.
+
+---
+
+# User Profile
+
+Allow multiple profiles.
+
+Fields:
+
+First Name
+
+Last Name
+
+Professional Headline
+
+Email
+
+Phone
+
+Address
+
+Country
+
+State
+
+City
+
+LinkedIn
+
+GitHub
+
+Portfolio
+
+Website
+
+Profile Picture
+
+Personal Bio
+
+Date of Birth (Optional)
+
+---
+
+# Resume Builder
+
+Support unlimited resumes.
+
+Resume Sections:
+
+Personal Information
+
+Professional Summary
+
+Career Objective
+
+Education
+
+Experience
+
+Skills
+
+Projects
+
+Certifications
+
+Awards
+
+Volunteer Experience
+
+Languages
+
+Interests
+
+Hobbies
+
+References
+
+Publications
+
+Conferences
+
+Achievements
+
+Military Service (Optional)
+
+Professional Memberships
+
+Custom Sections
+
+Every section should allow unlimited entries.
+
+Users can reorder sections.
+
+Drag-and-drop support.
+
+Auto Save.
+
+---
+
+# Resume Templates
+
+Include professional templates.
+
+Modern
+
+Professional
+
+Executive
+
+Minimal
+
+Corporate
+
+Creative
+
+Academic
+
+Engineering
+
+Medical
+
+Finance
+
+Sales
+
+Legal
+
+Government
+
+Student
+
+Internship
+
+Timeline
+
+One Page
+
+Two Page
+
+ATS Simple
+
+Dark Theme
+
+Elegant
+
+Allow:
+
+Font selection
+
+Color customization
+
+Margin customization
+
+Line spacing
+
+Header styles
+
+Section styles
+
+Icons On/Off
+
+Profile picture On/Off
+
+---
+
+# AI Features
+
+Integrate Groq API.
+
+Do NOT hardcode API keys.
+
+Users must add their own API key.
+
+Store securely using EncryptedSharedPreferences.
+
+AI Features:
+
+Professional Summary Generator
+
+Career Objective Generator
+
+Experience Rewriter
+
+Achievement Generator
+
+Project Description Generator
+
+Skills Optimizer
+
+Resume Reviewer
+
+Grammar Checker
+
+Spell Checker
+
+ATS Score
+
+Keyword Optimizer
+
+Resume Scoring
+
+Cover Letter Generator
+
+Recommendation Letter Generator
+
+Thank You Letter Generator
+
+Resignation Letter Generator
+
+Interview Questions
+
+Interview Answers
+
+STAR Answers
+
+Career Coach Chat
+
+AI Resume Chat
+
+Rewrite Selected Text
+
+Portfolio Bio Generator
+
+LinkedIn Headline Generator
+
+LinkedIn About Generator
+
+Personal Bio Generator
+
+Email Generator
+
+Career Suggestions
+
+Skill Suggestions
+
+Certification Suggestions
+
+Resume Translation
+
+Resume Tone Conversion
+
+Resume Length Optimization
+
+Job Description Matching
+
+Missing Keyword Detection
+
+AI Critique
+
+AI Improvement Suggestions
+
+Allow streaming AI responses if supported.
+
+---
+
+# AI Settings
+
+Users can configure:
+
+Groq API Key
+
+Test API Key
+
+Delete API Key
+
+Show/Hide API Key
+
+Secure Storage
+
+Model Selection
+
+Temperature
+
+Top P
+
+Max Tokens
+
+Frequency Penalty
+
+Presence Penalty
+
+Streaming Toggle
+
+Prompt Templates
+
+Reset Prompt
+
+Import Prompt Pack
+
+Export Prompt Pack
+
+Support future AI providers using an AIProvider interface.
+
+---
+
+# Resume Review
+
+Analyze:
+
+Grammar
+
+Spelling
+
+Formatting
+
+Professionalism
+
+Readability
+
+ATS Score
+
+Keyword Score
+
+Weak Sections
+
+Missing Sections
+
+Missing Skills
+
+Suggestions
+
+Overall Resume Score (0-100)
+
+---
+
+# Cover Letter
+
+Generate from:
+
+Resume
+
+Job Description
+
+Company
+
+Position
+
+Hiring Manager
+
+Tone
+
+Length
+
+Editable after generation.
+
+---
+
+# Interview Preparation
+
+Generate:
+
+HR Questions
+
+Technical Questions
+
+Behavioral Questions
+
+Coding Questions
+
+STAR Responses
+
+Mock Interview Mode
+
+Interview Timer
+
+Save Interview Sessions
+
+---
+
+# Career Coach
+
+Chat interface.
+
+Topics:
+
+Resume
+
+Career
+
+Promotion
+
+Salary Negotiation
+
+Skill Development
+
+Career Switching
+
+Learning Roadmap
+
+Professional Branding
+
+---
+
+# Portfolio Generator
+
+Generate:
+
+About Me
+
+Projects
+
+Skills
+
+Experience
+
+Download Portfolio
+
+HTML Export
+
+Markdown Export
+
+---
+
+# Job Tracker
+
+Track:
+
+Company
+
+Position
+
+Application Date
+
+Status
+
+Interview Date
+
+Offer
+
+Rejected
+
+Notes
+
+Reminders
+
+Search
+
+Filters
+
+Statistics
+
+---
+
+# Analytics
+
+Show:
+
+Total Resumes
+
+AI Usage
+
+Resume Score Trends
+
+Most Used Template
+
+Exports
+
+Completion %
+
+Recent Activity
+
+Charts
+
+---
+
+# PDF Features
+
+Generate beautiful PDFs.
+
+Support:
+
+A4
+
+Letter
+
+Margins
+
+Page Numbers
+
+QR Code
+
+Password Protection
+
+Digital Signature Placeholder
+
+Watermark
+
+Print
+
+Preview
+
+Zoom
+
+Share
+
+Email
+
+---
+
+# Export Formats
+
+PDF
+
+DOCX
+
+TXT
+
+HTML
+
+Markdown
+
+JSON Backup
+
+---
+
+# Import
+
+JSON
+
+Clipboard
+
+Existing Resume Text
+
+LinkedIn Import placeholder using official APIs only
+
+---
+
+# Database
+
+SQLite
+
+Tables:
+
+users
+
+profiles
+
+resumes
+
+education
+
+experience
+
+skills
+
+projects
+
+awards
+
+languages
+
+certifications
+
+references
+
+publications
+
+volunteer
+
+templates
+
+job_tracker
+
+analytics
+
+favorites
+
+notifications
+
+settings
+
+custom_sections
+
+resume_versions
+
+Store relationships using foreign keys where appropriate.
+
+Create a DatabaseHelper.
+
+Create repositories.
+
+Create models.
+
+---
+
+# Resume Version Control
+
+History
+
+Duplicate Resume
+
+Restore Version
+
+Delete Version
+
+Rename Version
+
+---
+
+# Search
+
+Search resumes
+
+Search companies
+
+Search projects
+
+Search skills
+
+Filter
+
+Sort
+
+Favorites
+
+Tags
+
+---
+
+# Notifications
+
+Resume Reminder
+
+Interview Reminder
+
+Backup Reminder
+
+Career Tip
+
+Certificate Renewal
+
+Export Success
+
+Configurable
+
+---
+
+# Backup
+
+JSON Export
+
+JSON Import
+
+Local Backup
+
+Restore
+
+Automatic Backup
+
+Manual Backup
+
+---
+
+# Appearance
+
+Theme
+
+Dark
+
+Light
+
+AMOLED
+
+System
+
+Accent Color Picker
+
+Font Picker
+
+Card Radius
+
+Animation Speed
+
+Dashboard Layout
+
+Grid/List
+
+Icon Packs
+
+Material You
+
+High Contrast
+
+Large Text
+
+Reduce Motion
+
+---
+
+# Accessibility
+
+TalkBack
+
+Screen Reader
+
+Color Blind Support
+
+Haptic Feedback
+
+Keyboard Navigation
+
+---
+
+# Security
+
+Encrypted Database support
+
+EncryptedSharedPreferences
+
+PIN Lock
+
+Biometric Unlock
+
+Hide App Preview
+
+Auto Lock
+
+Secure Delete
+
+Clear Cache
+
+Clear AI Cache
+
+---
+
+# Settings
+
+Profile
+
+Appearance
+
+AI Settings
+
+Resume Preferences
+
+Notifications
+
+Security
+
+Accessibility
+
+Backup
+
+Language
+
+Developer
+
+About
+
+Help
+
+Licenses
+
+---
+
+# Languages
+
+Support localization.
+
+English
+
+French
+
+Spanish
+
+German
+
+Portuguese
+
+Arabic
+
+Hindi
+
+Chinese
+
+Japanese
+
+---
+
+# Developer Options
+
+Prompt Tester
+
+View API Requests
+
+View API Responses
+
+Debug Logs
+
+Performance Metrics
+
+Network Logs
+
+Export Logs
+
+Clear Logs
+
+---
+
+# Folder Structure
+
+Create a clean project structure.
+
+activities/
+
+fragments/
+
+viewmodels/
+
+repositories/
+
+database/
+
+models/
+
+network/
+
+utils/
+
+helpers/
+
+templates/
+
+adapter/
+
+pdf/
+
+security/
+
+settings/
+
+analytics/
+
+notifications/
+
+assets/
+
+res/
+
+---
+
+# Code Quality
+
+Use:
+
+JavaDocs
+
+Comments
+
+Meaningful variable names
+
+Error handling
+
+Input validation
+
+Null safety
+
+Loading indicators
+
+Retry dialogs
+
+Offline support
+
+Caching
+
+Repository pattern
+
+No duplicated code
+
+Reusable components
+
+---
+
+# UI Requirements
+
+Create every screen.
+
+Every button must work.
+
+Every RecyclerView should support:
+
+Add
+
+Edit
+
+Delete
+
+Search
+
+Sort
+
+Swipe Delete
+
+Undo
+
+Animations
+
+Empty States
+
+---
+
+# Performance
+
+Lazy loading
+
+Memory optimization
+
+Image caching
+
+Database indexing
+
+Background threads
+
+Avoid memory leaks
+
+---
+
+# Error Handling
+
+No crashes.
+
+Handle:
+
+No Internet
+
+Invalid API Key
+
+Database Failure
+
+Empty Forms
+
+Invalid PDF
+
+Export Errors
+
+API Timeout
+
+JSON Errors
+
+Graceful recovery.
+
+---
+
+# Deliverables
+
+Generate:
+
+1. Complete Android Studio project.
+
+2. All Java source files.
+
+3. SQLite implementation.
+
+4. MVVM architecture.
+
+5. Retrofit implementation.
+
+6. Groq API integration.
+
+7. Secure API key storage.
+
+8. Material Design 3 UI.
+
+9. PDF generation.
+
+10. Resume templates.
+
+11. AI chat interface.
+
+12. Settings screens.
+
+13. Job Tracker.
+
+14. Analytics dashboard.
+
+15. Backup and restore.
+
+16. Notifications.
+
+17. Search.
+
+18. Filters.
+
+19. Documentation.
+
+20. README.
+
+21. Build instructions.
+
+22. Gradle files.
+
+23. Manifest.
+
+24. Required permissions.
+
+25. Sample data.
+
+26. Unit-test-ready architecture.
+
+27. Modular, extensible codebase.
+
+The application should compile successfully, follow Android best practices, be easy to maintain, and be structured so additional AI providers and new career-related features can be added with minimal changes.

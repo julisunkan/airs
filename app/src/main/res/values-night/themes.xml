@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Night Theme (auto-applied in night mode) -->
+    <style name="Theme.AIResumeBuilder" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#A8C8FF</item>
+        <item name="colorOnPrimary">#003063</item>
+        <item name="colorPrimaryContainer">#0043A8</item>
+        <item name="colorOnPrimaryContainer">#D3E4FF</item>
+        <item name="colorSecondary">#BBC8DA</item>
+        <item name="colorSecondaryContainer">#3B4858</item>
+        <item name="colorTertiary">#D8B9E8</item>
+        <item name="colorTertiaryContainer">#523F60</item>
+        <item name="colorError">#FFB4AB</item>
+        <item name="colorSurface">#111418</item>
+        <item name="colorOnSurface">#E2E2E9</item>
+        <item name="colorSurfaceVariant">#43474E</item>
+        <item name="colorOnSurfaceVariant">#C3C7CF</item>
+        <item name="android:colorBackground">#111418</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <style name="Theme.AIResumeBuilder.Splash" parent="Theme.AIResumeBuilder">
+        <item name="android:windowBackground">#1565C0</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+        <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar"
+            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+            app:title="@string/favorites" app:navigationIcon="@drawable/ic_arrow_back"/>
+    </com.google.android.material.appbar.AppBarLayout>
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvFavorites"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:padding="16dp" android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    <LinearLayout android:id="@+id/llEmpty" android:layout_width="match_parent"
+        android:layout_height="match_parent" android:orientation="vertical"
+        android:gravity="center" android:padding="48dp" android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="⭐" android:textSize="64sp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/empty_favorites_title" android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceTitleLarge"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/empty_favorites_body" android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" android:gravity="center"/>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

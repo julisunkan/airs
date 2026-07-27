@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/groq_api_settings">
+        <EditTextPreference
+            android:key="api_key"
+            android:title="@string/enter_api_key"
+            android:summary="Enter your Groq API key"
+            android:inputType="text" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/default_settings">
+        <ListPreference
+            android:key="default_tone"
+            android:title="@string/default_tone"
+            android:entries="@array/tones"
+            android:entryValues="@array/tones"
+            android:defaultValue="Professional" />
+
+        <ListPreference
+            android:key="default_length"
+            android:title="@string/default_length"
+            android:entries="@array/lengths"
+            android:entryValues="@array/lengths"
+            android:defaultValue="Medium" />
+
+        <ListPreference
+            android:key="default_language"
+            android:title="@string/default_language"
+            android:entries="@array/languages"
+            android:entryValues="@array/languages"
+            android:defaultValue="English" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

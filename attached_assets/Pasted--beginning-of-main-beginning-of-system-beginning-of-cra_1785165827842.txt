@@ -1,0 +1,61 @@
+--------- beginning of main
+--------- beginning of system
+--------- beginning of crash
+---------------------------- PROCESS STARTED (2575) for package com.julisunkan.email.ai ----------------------------
+2026-07-27 16:21:18.555  2575-2575  Compatibil...geReporter com.julisunkan.email.ai              D  Compat change id reported: 171979766; UID 10165; state: ENABLED
+2026-07-27 16:21:19.414  2575-2575  GraphicsEnvironment     com.julisunkan.email.ai              V  ANGLE Developer option for 'com.julisunkan.email.ai' set to: 'default'
+2026-07-27 16:21:19.416  2575-2575  GraphicsEnvironment     com.julisunkan.email.ai              V  ANGLE GameManagerService for com.julisunkan.email.ai: false
+2026-07-27 16:21:19.417  2575-2575  GraphicsEnvironment     com.julisunkan.email.ai              V  Neither updatable production driver nor prerelease driver is supported.
+2026-07-27 16:21:19.422  2575-2575  NetworkSecurityConfig   com.julisunkan.email.ai              D  No Network Security Config specified, using platform default
+2026-07-27 16:21:19.423  2575-2575  NetworkSecurityConfig   com.julisunkan.email.ai              D  No Network Security Config specified, using platform default
+2026-07-27 16:21:19.973  2575-2663  libEGL                  com.julisunkan.email.ai              D  loaded /vendor/lib64/egl/libEGL_emulation.so
+2026-07-27 16:21:19.981  2575-2663  libEGL                  com.julisunkan.email.ai              D  loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+2026-07-27 16:21:19.994  2575-2663  libEGL                  com.julisunkan.email.ai              D  loaded /vendor/lib64/egl/libGLESv2_emulation.so
+2026-07-27 16:21:20.188  2575-2575  AppCompatDelegate       com.julisunkan.email.ai              D  Checking for metadata for AppLocalesMetadataHolderService : Service not found
+2026-07-27 16:21:22.730  2575-2575  sunkan.email.a          com.julisunkan.email.ai              W  Verification of androidx.savedstate.SavedStateRegistryOwner androidx.savedstate.ViewTreeSavedStateRegistryOwner.get(android.view.View) took 127.032ms (220.42 bytecodes/s) (1904B approximate peak alloc)
+2026-07-27 16:21:23.162   608-670   VerityUtils             system_server                        E  Failed to measure fs-verity, errno 1: /data/app/~~gpoeFLGbDUbdzaEPr5HC_g==/com.julisunkan.email.ai-zGUNv6b9qVMQSajokIww-Q==/base.apk
+2026-07-27 16:21:23.459  2575-2575  sunkan.email.a          com.julisunkan.email.ai              W  Verification of void androidx.core.view.WindowInsetsCompat$Impl21.<init>(androidx.core.view.WindowInsetsCompat, androidx.core.view.WindowInsetsCompat$Impl21) took 177.545ms (61.96 bytecodes/s) (1592B approximate peak alloc)
+2026-07-27 16:21:23.868  2575-2575  sunkan.email.a          com.julisunkan.email.ai              W  Accessing hidden method Landroid/view/View;->computeFitSystemWindows(Landroid/graphics/Rect;Landroid/graphics/Rect;)Z (unsupported, reflection, allowed)
+2026-07-27 16:21:23.869  2575-2575  sunkan.email.a          com.julisunkan.email.ai              W  Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+2026-07-27 16:21:24.046  2575-2584  sunkan.email.a          com.julisunkan.email.ai              W  Suspending all threads took: 40.217ms
+2026-07-27 16:21:24.381  2575-2575  Compatibil...geReporter com.julisunkan.email.ai              D  Compat change id reported: 171228096; UID 10165; state: ENABLED
+2026-07-27 16:21:25.543  2575-2575  AndroidRuntime          com.julisunkan.email.ai              D  Shutting down VM
+2026-07-27 16:21:25.545  2575-2575  AndroidRuntime          com.julisunkan.email.ai              E  FATAL EXCEPTION: main
+                                                                                                    Process: com.julisunkan.email.ai, PID: 2575
+                                                                                                    java.lang.RuntimeException: Unable to start activity ComponentInfo{com.julisunkan.email.ai/com.julisunkan.aiemail.MainActivity}: java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor. Do not request Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
+                                                                                                    	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3685)
+                                                                                                    	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3842)
+                                                                                                    	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2252)
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106)
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:201)
+                                                                                                    	at android.os.Looper.loop(Looper.java:288)
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:7842)
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:548)
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1003)
+                                                                                                    Caused by: java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor. Do not request Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
+                                                                                                    	at androidx.appcompat.app.AppCompatDelegateImpl.setSupportActionBar(AppCompatDelegateImpl.java:630)
+                                                                                                    	at androidx.appcompat.app.AppCompatActivity.setSupportActionBar(AppCompatActivity.java:185)
+                                                                                                    	at com.julisunkan.aiemail.MainActivity.setupToolbar(MainActivity.java:75)
+                                                                                                    	at com.julisunkan.aiemail.MainActivity.onCreate(MainActivity.java:48)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8054)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8034)
+                                                                                                    	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1341)
+                                                                                                    	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3666)
+                                                                                                    	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3842) 
+                                                                                                    	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103) 
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135) 
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95) 
+                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2252) 
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106) 
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:201) 
+                                                                                                    	at android.os.Looper.loop(Looper.java:288) 
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:7842) 
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method) 
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:548) 
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1003) 
+2026-07-27 16:21:25.983  2575-2575  Process                 com.julisunkan.email.ai              I  Sending signal. PID: 2575 SIG: 9
+---------------------------- PROCESS ENDED (2575) for package com.julisunkan.email.ai ----------------------------

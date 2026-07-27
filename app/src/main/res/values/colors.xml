@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Brand Colors -->
+    <color name="primary">#1565C0</color>
+    <color name="primary_variant">#0D47A1</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#D3E4FF</color>
+    <color name="on_primary_container">#001C3D</color>
+
+    <color name="secondary">#535F70</color>
+    <color name="secondary_container">#D7E3F7</color>
+    <color name="on_secondary_container">#101C2B</color>
+
+    <color name="tertiary">#6B5778</color>
+    <color name="tertiary_container">#F2DAFF</color>
+
+    <!-- Surface Colors -->
+    <color name="surface">#FAFCFF</color>
+    <color name="surface_variant">#DFE2EB</color>
+    <color name="on_surface">#191C20</color>
+    <color name="on_surface_variant">#43474E</color>
+    <color name="background">#FAFCFF</color>
+    <color name="on_background">#191C20</color>
+
+    <!-- Error -->
+    <color name="error">#BA1A1A</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="error_container">#FFDAD6</color>
+
+    <!-- Dark Surface Colors -->
+    <color name="surface_dark">#111418</color>
+    <color name="surface_variant_dark">#43474E</color>
+    <color name="on_surface_dark">#E2E2E9</color>
+    <color name="background_dark">#111418</color>
+
+    <!-- AMOLED -->
+    <color name="surface_amoled">#000000</color>
+    <color name="background_amoled">#000000</color>
+
+    <!-- Accent Colors -->
+    <color name="accent_blue">#1565C0</color>
+    <color name="accent_green">#2E7D32</color>
+    <color name="accent_purple">#6A1B9A</color>
+    <color name="accent_orange">#E65100</color>
+    <color name="accent_teal">#00695C</color>
+    <color name="accent_red">#C62828</color>
+
+    <!-- Job Status Colors -->
+    <color name="status_applied">#1565C0</color>
+    <color name="status_interview">#F57C00</color>
+    <color name="status_offer">#2E7D32</color>
+    <color name="status_rejected">#C62828</color>
+    <color name="status_withdrawn">#757575</color>
+
+    <!-- Score Colors -->
+    <color name="score_high">#2E7D32</color>
+    <color name="score_medium">#F57C00</color>
+    <color name="score_low">#C62828</color>
+
+    <!-- Misc -->
+    <color name="divider">#E0E0E0</color>
+    <color name="overlay_light">#1A000000</color>
+    <color name="overlay_dark">#33FFFFFF</color>
+    <color name="card_elevation_color">#0D000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="text_hint">#9E9E9E</color>
+</resources>

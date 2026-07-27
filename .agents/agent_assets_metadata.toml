@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "siGyecAEKjYFAszQcQi6k"
+uri = "file://attached_assets/generated_images/app_icon.png"
+type = "image"
+title = "AI Email Writer — App Icon"
