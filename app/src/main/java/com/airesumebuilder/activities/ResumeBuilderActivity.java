@@ -1,19 +1,30 @@
 package com.airesumebuilder.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airesumebuilder.R;
+import com.airesumebuilder.adapters.SectionsAdapter;
+import com.airesumebuilder.database.DatabaseHelper;
 import com.airesumebuilder.models.Resume;
 import com.airesumebuilder.repositories.ResumeRepository;
 import com.airesumebuilder.utils.ExportUtils;
@@ -21,8 +32,11 @@ import com.airesumebuilder.utils.UiUtils;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +46,8 @@ import java.util.concurrent.Executors;
  */
 public class ResumeBuilderActivity extends AppCompatActivity {
 
+    private static final String TAG = "ResumeBuilderActivity";
+
     public static final String EXTRA_RESUME_ID = "resume_id";
     public static final String EXTRA_NEW       = "new_resume";
 
@@ -39,33 +55,33 @@ public class ResumeBuilderActivity extends AppCompatActivity {
     private Resume            currentResume;
     private TextInputEditText etTitle;
     private Chip              chipAutoSave;
-    private boolean           isNewResume;
+    private SectionsAdapter   sectionsAdapter;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final Handler         handler  = new Handler(Looper.getMainLooper());
+    private final ExecutorService executor       = Executors.newSingleThreadExecutor();
+    private final Handler         handler        = new Handler(Looper.getMainLooper());
+    private final Handler         autoSaveHandler = new Handler(Looper.getMainLooper());
+    private final Runnable        autoSaveRunnable = this::saveResume;
 
-    // Auto-save 1.5 s after last keystroke
-    private final Handler   autoSaveHandler  = new Handler(Looper.getMainLooper());
-    private final Runnable  autoSaveRunnable = this::saveResume;
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resume_builder);
 
-        resumeRepo    = new ResumeRepository(this);
-        etTitle       = findViewById(R.id.etResumeTitle);
-        chipAutoSave  = findViewById(R.id.chipAutoSave);
+        resumeRepo   = new ResumeRepository(this);
+        etTitle      = findViewById(R.id.etResumeTitle);
+        chipAutoSave = findViewById(R.id.chipAutoSave);
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
 
-        isNewResume = getIntent().getBooleanExtra(EXTRA_NEW, false);
-        long resumeId = getIntent().getLongExtra(EXTRA_RESUME_ID, -1L);
+        boolean isNew   = getIntent().getBooleanExtra(EXTRA_NEW, false);
+        long    resumeId = getIntent().getLongExtra(EXTRA_RESUME_ID, -1L);
 
-        if (isNewResume || resumeId < 0) {
+        if (isNew || resumeId < 0) {
             currentResume = new Resume();
             currentResume.setTitle("Untitled Resume");
         } else {
@@ -73,7 +89,21 @@ public class ResumeBuilderActivity extends AppCompatActivity {
         }
 
         setupTitleField();
-        setupSectionButtons();
+        setupSectionsRecyclerView();
+        setupBottomButtons();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        autoSaveHandler.removeCallbacks(autoSaveRunnable);
+        saveResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdown();
     }
 
     // ── Setup ─────────────────────────────────────────────────────────────────
@@ -82,30 +112,40 @@ public class ResumeBuilderActivity extends AppCompatActivity {
         if (currentResume != null) {
             etTitle.setText(currentResume.getTitle());
         }
-
         etTitle.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
             @Override public void onTextChanged(CharSequence s, int st, int b, int c) {}
             @Override public void afterTextChanged(Editable s) {
-                if (currentResume != null) {
-                    currentResume.setTitle(s.toString().trim());
-                }
+                if (currentResume != null) currentResume.setTitle(s.toString().trim());
                 scheduleAutoSave();
             }
         });
     }
 
-    private void setupSectionButtons() {
+    private void setupSectionsRecyclerView() {
+        sectionsAdapter = new SectionsAdapter(this::onDeleteSection);
+        RecyclerView rv = findViewById(R.id.rvSections);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(sectionsAdapter);
+    }
+
+    private void setupBottomButtons() {
         findViewById(R.id.btnAddSection).setOnClickListener(v -> showAddSectionDialog());
         findViewById(R.id.btnPreview).setOnClickListener(v -> {
             if (currentResume != null && currentResume.getId() > 0) {
-                Intent i = new Intent(this, ResumePreviewActivity.class);
-                i.putExtra(ResumePreviewActivity.EXTRA_RESUME_ID, currentResume.getId());
-                startActivity(i);
+                openPreview();
             } else {
-                saveResume(); // save first, then preview
+                saveResume();
+                UiUtils.showSnackbar(findViewById(android.R.id.content),
+                        "Resume saved — tap Preview again to open it");
             }
         });
+    }
+
+    private void openPreview() {
+        Intent i = new Intent(this, ResumePreviewActivity.class);
+        i.putExtra(ResumePreviewActivity.EXTRA_RESUME_ID, currentResume.getId());
+        startActivity(i);
     }
 
     // ── Menu ──────────────────────────────────────────────────────────────────
@@ -113,20 +153,14 @@ public class ResumeBuilderActivity extends AppCompatActivity {
     private boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_preview) {
-            if (currentResume != null && currentResume.getId() > 0) {
-                Intent i = new Intent(this, ResumePreviewActivity.class);
-                i.putExtra(ResumePreviewActivity.EXTRA_RESUME_ID, currentResume.getId());
-                startActivity(i);
-            }
+            if (currentResume != null && currentResume.getId() > 0) openPreview();
             return true;
         } else if (id == R.id.action_export) {
             showExportDialog();
             return true;
         } else if (id == R.id.action_ai_review) {
             Intent i = new Intent(this, AiReviewActivity.class);
-            if (currentResume != null) {
-                i.putExtra(AiReviewActivity.EXTRA_RESUME_ID, currentResume.getId());
-            }
+            if (currentResume != null) i.putExtra(AiReviewActivity.EXTRA_RESUME_ID, currentResume.getId());
             startActivity(i);
             return true;
         } else if (id == R.id.action_duplicate) {
@@ -139,7 +173,7 @@ public class ResumeBuilderActivity extends AppCompatActivity {
         return false;
     }
 
-    // ── Data operations ───────────────────────────────────────────────────────
+    // ── Resume persistence ────────────────────────────────────────────────────
 
     private void loadResume(long resumeId) {
         executor.execute(() -> {
@@ -147,6 +181,7 @@ public class ResumeBuilderActivity extends AppCompatActivity {
             handler.post(() -> {
                 if (currentResume != null) {
                     etTitle.setText(currentResume.getTitle());
+                    loadSections();
                 }
             });
         });
@@ -156,7 +191,6 @@ public class ResumeBuilderActivity extends AppCompatActivity {
         if (currentResume == null) return;
         String title = UiUtils.getText(etTitle);
         if (!title.isEmpty()) currentResume.setTitle(title);
-
         executor.execute(() -> {
             if (currentResume.getId() <= 0) {
                 long id = resumeRepo.insert(currentResume);
@@ -174,151 +208,10 @@ public class ResumeBuilderActivity extends AppCompatActivity {
     }
 
     private void showAutoSavedIndicator() {
+        if (chipAutoSave == null) return;
         chipAutoSave.setVisibility(View.VISIBLE);
         chipAutoSave.setText("Saved ✓");
         handler.postDelayed(() -> chipAutoSave.setVisibility(View.GONE), 2000);
-    }
-
-    // ── Export options ────────────────────────────────────────────────────────
-
-    /**
-     * Shows a dialog that lets the user pick an export format:
-     * plain text or HTML.  Both formats are written to the app's Documents
-     * folder and then opened in the system share sheet.
-     */
-    private void showExportDialog() {
-        if (currentResume == null) {
-            UiUtils.showSnackbar(findViewById(android.R.id.content),
-                    "Save the resume first before exporting");
-            return;
-        }
-
-        String[] options = {"Share as Plain Text (.txt)", "Share as HTML (.html)"};
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Export Resume")
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        exportResume(false);
-                    } else {
-                        exportResume(true);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    /**
-     * Builds resume content and exports it as either HTML or plain text,
-     * then opens the system share sheet so the user can send the file.
-     *
-     * @param asHtml {@code true} → export HTML; {@code false} → export plain text
-     */
-    private void exportResume(boolean asHtml) {
-        executor.execute(() -> {
-            Resume r = currentResume;
-            String accentColor = r.getAccentColor() != null ? r.getAccentColor() : "#1565C0";
-
-            if (asHtml) {
-                String html = buildHtml(r, accentColor);
-                File file = ExportUtils.exportAsHtml(this, r, html);
-                handler.post(() -> {
-                    if (file != null) {
-                        ExportUtils.shareFile(this, file, "text/html");
-                    } else {
-                        UiUtils.showSnackbar(
-                                findViewById(android.R.id.content), "HTML export failed");
-                    }
-                });
-            } else {
-                String text = buildPlainText(r);
-                File file = ExportUtils.exportAsTxt(this, r, text);
-                handler.post(() -> {
-                    if (file != null) {
-                        ExportUtils.shareFile(this, file, "text/plain");
-                    } else {
-                        UiUtils.showSnackbar(
-                                findViewById(android.R.id.content), "Text export failed");
-                    }
-                });
-            }
-        });
-    }
-
-    /** Builds a clean plain-text summary of the resume. */
-    private String buildPlainText(Resume r) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(r.getTitle()).append('\n');
-        sb.append(repeat('=', r.getTitle().length())).append('\n');
-        sb.append('\n');
-        appendField(sb, "Template",     r.getTemplate());
-        appendField(sb, "Font",         r.getFont());
-        appendField(sb, "Accent color", r.getAccentColor());
-        if (r.getAtsScore() > 0)
-            sb.append("ATS Score:     ").append(r.getAtsScore()).append('\n');
-        if (r.getOverallScore() > 0)
-            sb.append("Overall Score: ").append(r.getOverallScore()).append('\n');
-        if (r.getTags() != null && !r.getTags().isEmpty())
-            sb.append("Tags:          ").append(r.getTags()).append('\n');
-        sb.append('\n');
-        sb.append("--- Sections ---\n");
-        sb.append("Add your content in the Resume Builder sections.\n");
-        return sb.toString();
-    }
-
-    /** Builds an HTML representation of the resume for export / preview. */
-    private String buildHtml(Resume r, String color) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<!DOCTYPE html><html><head>")
-          .append("<meta charset='UTF-8'>")
-          .append("<meta name='viewport' content='width=device-width,initial-scale=1'>")
-          .append("<style>")
-          .append("body{font-family:sans-serif;margin:40px auto;max-width:800px;color:#1a1a1a}")
-          .append("h1{color:").append(color).append(";border-bottom:2px solid ").append(color)
-              .append(";padding-bottom:8px;margin-bottom:4px}")
-          .append("h2{color:").append(color).append(";font-size:16px;margin-top:24px;margin-bottom:4px}")
-          .append(".meta{color:#666;font-size:13px;margin-bottom:16px}")
-          .append(".badge{display:inline-block;background:").append(color)
-              .append(";color:#fff;border-radius:4px;padding:2px 8px;font-size:12px;margin-right:4px}")
-          .append("</style></head><body>")
-          .append("<h1>").append(safe(r.getTitle())).append("</h1>")
-          .append("<p class='meta'>")
-          .append("<span class='badge'>").append(safe(r.getTemplate())).append("</span> ")
-          .append("<span class='badge'>").append(safe(r.getFont())).append("</span>");
-        if (r.getAtsScore() > 0)
-            sb.append(" ATS: ").append(r.getAtsScore()).append("%");
-        if (r.getOverallScore() > 0)
-            sb.append(" &nbsp;|&nbsp; Score: ").append(r.getOverallScore()).append("%");
-        sb.append("</p>");
-
-        sb.append("<h2>Professional Summary</h2>")
-          .append("<p><em>Add your summary in the Resume Builder.</em></p>")
-          .append("<h2>Experience</h2><p><em>No experience added yet.</em></p>")
-          .append("<h2>Education</h2><p><em>No education added yet.</em></p>")
-          .append("<h2>Skills</h2><p><em>No skills added yet.</em></p>");
-
-        if (r.getTags() != null && !r.getTags().isEmpty()) {
-            sb.append("<h2>Tags</h2><p>").append(safe(r.getTags())).append("</p>");
-        }
-
-        sb.append("</body></html>");
-        return sb.toString();
-    }
-
-    private static String safe(String s) {
-        if (s == null) return "";
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-    }
-
-    private static void appendField(StringBuilder sb, String label, String value) {
-        if (value != null && !value.isEmpty()) {
-            sb.append(String.format("%-14s %s\n", label + ":", value));
-        }
-    }
-
-    private static String repeat(char c, int count) {
-        StringBuilder sb = new StringBuilder(count);
-        for (int i = 0; i < count; i++) sb.append(c);
-        return sb.toString();
     }
 
     private void duplicateResume() {
@@ -338,7 +231,7 @@ public class ResumeBuilderActivity extends AppCompatActivity {
 
     private void confirmDelete() {
         if (currentResume == null) return;
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Delete Resume")
                 .setMessage("Delete this resume? This cannot be undone.")
                 .setPositiveButton("Delete", (d, w) -> executor.execute(() -> {
@@ -349,32 +242,569 @@ public class ResumeBuilderActivity extends AppCompatActivity {
                 .show();
     }
 
+    // ── Section list ──────────────────────────────────────────────────────────
+
+    /** Reloads all section entries for the current resume and refreshes the list. */
+    private void loadSections() {
+        if (currentResume == null || currentResume.getId() <= 0) return;
+        long resumeId = currentResume.getId();
+        executor.execute(() -> {
+            List<SectionsAdapter.SectionItem> items = buildSectionList(resumeId);
+            handler.post(() -> sectionsAdapter.setItems(items));
+        });
+    }
+
+    /** Queries every section table and returns a combined, ordered list. */
+    private List<SectionsAdapter.SectionItem> buildSectionList(long resumeId) {
+        SQLiteDatabase db = DatabaseHelper.getInstance(this).getReadableDatabase();
+        List<SectionsAdapter.SectionItem> all = new ArrayList<>();
+
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_EDUCATION,
+                "Education", "degree", "institution"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_EXPERIENCE,
+                "Experience", "position", "company"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_SKILLS,
+                "Skills", "name", "level"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_PROJECTS,
+                "Projects", "name", "technologies"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_CERTIFICATIONS,
+                "Certifications", "name", "issuer"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_AWARDS,
+                "Awards", "title", "issuer"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_LANGUAGES,
+                "Languages", "name", "proficiency"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_VOLUNTEER,
+                "Volunteer", "role", "organization"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_REFERENCES,
+                "References", "name", "company"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_PUBLICATIONS,
+                "Publications", "title", "publisher"));
+        all.addAll(querySection(db, resumeId, DatabaseHelper.TABLE_CUSTOM_SECTIONS,
+                "Custom", "section_title", "content"));
+
+        return all;
+    }
+
+    private List<SectionsAdapter.SectionItem> querySection(
+            SQLiteDatabase db, long resumeId, String table, String type,
+            String titleCol, String subtitleCol) {
+        List<SectionsAdapter.SectionItem> list = new ArrayList<>();
+        try {
+            Cursor c = db.query(table, null, "resume_id = ?",
+                    new String[]{String.valueOf(resumeId)},
+                    null, null, "sort_order ASC, id ASC");
+            try {
+                while (c.moveToNext()) {
+                    long   id    = c.getLong(c.getColumnIndexOrThrow("id"));
+                    String title = safeGet(c, titleCol);
+                    String sub   = safeGet(c, subtitleCol);
+                    if (title.isEmpty()) title = type;
+                    if (sub.length() > 60) sub = sub.substring(0, 57) + "…";
+                    list.add(new SectionsAdapter.SectionItem(type, title, sub, id, table));
+                }
+            } finally {
+                c.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "querySection failed: " + table, e);
+        }
+        return list;
+    }
+
+    private String safeGet(Cursor c, String col) {
+        int idx = c.getColumnIndex(col);
+        if (idx < 0 || c.isNull(idx)) return "";
+        return c.getString(idx);
+    }
+
+    /** Deletes a section entry from the DB and refreshes the list. */
+    private void onDeleteSection(SectionsAdapter.SectionItem item) {
+        executor.execute(() -> {
+            DatabaseHelper.getInstance(this).getWritableDatabase()
+                    .delete(item.table, "id = ?", new String[]{String.valueOf(item.id)});
+            long resumeId = (currentResume != null) ? currentResume.getId() : -1;
+            List<SectionsAdapter.SectionItem> updated =
+                    (resumeId > 0) ? buildSectionList(resumeId) : new ArrayList<>();
+            handler.post(() -> {
+                sectionsAdapter.setItems(updated);
+                UiUtils.showSnackbar(findViewById(android.R.id.content),
+                        item.type + " entry removed");
+            });
+        });
+    }
+
+    // ── Insert helper ─────────────────────────────────────────────────────────
+
+    /**
+     * Saves the current resume (if not yet persisted), inserts a row into
+     * {@code table} with the given values, then refreshes the section list.
+     * Always called from the UI thread; runs DB work on the background executor.
+     */
+    private void insertSection(String table, ContentValues cv, String label) {
+        executor.execute(() -> {
+            try {
+                // Persist resume first so we have a valid resume_id
+                if (currentResume.getId() <= 0) {
+                    String title = currentResume.getTitle();
+                    if (title == null || title.isEmpty()) currentResume.setTitle("Untitled Resume");
+                    long newId = resumeRepo.insert(currentResume);
+                    if (newId <= 0) {
+                        handler.post(() -> UiUtils.showSnackbar(
+                                findViewById(android.R.id.content), "Failed to save resume"));
+                        return;
+                    }
+                    currentResume.setId(newId);
+                }
+
+                cv.put("resume_id", currentResume.getId());
+                DatabaseHelper.getInstance(this).getWritableDatabase()
+                        .insertOrThrow(table, null, cv);
+
+                List<SectionsAdapter.SectionItem> updated =
+                        buildSectionList(currentResume.getId());
+
+                handler.post(() -> {
+                    sectionsAdapter.setItems(updated);
+                    showAutoSavedIndicator();
+                    UiUtils.showSnackbar(
+                            findViewById(android.R.id.content), label + " added");
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "insertSection failed: " + table, e);
+                handler.post(() -> UiUtils.showSnackbar(
+                        findViewById(android.R.id.content),
+                        "Failed to save " + label + ": " + e.getMessage()));
+            }
+        });
+    }
+
+    // ── Add-section picker ────────────────────────────────────────────────────
+
     private void showAddSectionDialog() {
         String[] sections = {
-            "Professional Summary", "Career Objective", "Education", "Experience",
-            "Skills", "Projects", "Certifications", "Awards", "Languages",
-            "Volunteer", "References", "Publications", "Achievements", "Custom Section"
+            "Professional Summary", "Career Objective",
+            "Education", "Experience", "Skills", "Projects",
+            "Certifications", "Awards", "Languages", "Volunteer",
+            "References", "Publications", "Achievements", "Custom Section"
         };
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Add Section")
-                .setItems(sections, (d, which) ->
-                    UiUtils.showSnackbar(
-                        findViewById(android.R.id.content),
-                        sections[which] + " section added"))
+                .setItems(sections, (d, which) -> routeToSectionDialog(sections[which]))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        autoSaveHandler.removeCallbacks(autoSaveRunnable);
-        saveResume();
+    private void routeToSectionDialog(String sectionName) {
+        switch (sectionName) {
+            case "Professional Summary":
+            case "Career Objective":
+                showSummaryDialog(sectionName);          break;
+            case "Education":
+                showEducationDialog();                   break;
+            case "Experience":
+                showExperienceDialog();                  break;
+            case "Skills":
+                showSkillDialog();                       break;
+            case "Projects":
+                showProjectDialog();                     break;
+            case "Certifications":
+                showCertificationDialog();               break;
+            case "Awards":
+            case "Achievements":
+                showAwardDialog(sectionName);            break;
+            case "Languages":
+                showLanguageDialog();                    break;
+            case "Volunteer":
+                showVolunteerDialog();                   break;
+            case "References":
+                showReferenceDialog();                   break;
+            case "Publications":
+                showPublicationDialog();                 break;
+            default: // "Custom Section"
+                showCustomSectionDialog();               break;
+        }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        executor.shutdown();
+    // ── Section dialogs ───────────────────────────────────────────────────────
+
+    private void showSummaryDialog(String sectionTitle) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etContent = makeMultilineField(layout, sectionTitle + " text *");
+
+        showFormDialog("Add " + sectionTitle, layout, () -> {
+            String content = UiUtils.getText(etContent);
+            if (content.isEmpty()) { snack("Please enter text"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("section_title", sectionTitle);
+            cv.put("content",       content);
+            insertSection(DatabaseHelper.TABLE_CUSTOM_SECTIONS, cv, sectionTitle);
+        });
+    }
+
+    private void showEducationDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etInstitution = makeField(layout, "Institution *");
+        TextInputEditText etDegree      = makeField(layout, "Degree (e.g. B.Sc.)");
+        TextInputEditText etField       = makeField(layout, "Field of Study");
+        TextInputEditText etStart       = makeField(layout, "Start Year");
+        TextInputEditText etEnd         = makeField(layout, "End Year (or Expected)");
+        TextInputEditText etGpa         = makeField(layout, "GPA");
+        TextInputEditText etDesc        = makeMultilineField(layout, "Description / Achievements");
+
+        showFormDialog("Add Education", layout, () -> {
+            String institution = UiUtils.getText(etInstitution);
+            if (institution.isEmpty()) { snack("Institution is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("institution", institution);
+            cv.put("degree",      UiUtils.getText(etDegree));
+            cv.put("field",       UiUtils.getText(etField));
+            cv.put("start_date",  UiUtils.getText(etStart));
+            cv.put("end_date",    UiUtils.getText(etEnd));
+            cv.put("gpa",         UiUtils.getText(etGpa));
+            cv.put("description", UiUtils.getText(etDesc));
+            insertSection(DatabaseHelper.TABLE_EDUCATION, cv, "Education");
+        });
+    }
+
+    private void showExperienceDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etCompany   = makeField(layout, "Company *");
+        TextInputEditText etPosition  = makeField(layout, "Job Title *");
+        TextInputEditText etLocation  = makeField(layout, "Location");
+        TextInputEditText etStart     = makeField(layout, "Start Date (e.g. Jan 2021)");
+        TextInputEditText etEnd       = makeField(layout, "End Date (or 'Present')");
+        TextInputEditText etDesc      = makeMultilineField(layout, "Responsibilities");
+        TextInputEditText etAchieve   = makeMultilineField(layout, "Key Achievements");
+
+        showFormDialog("Add Experience", layout, () -> {
+            String company  = UiUtils.getText(etCompany);
+            String position = UiUtils.getText(etPosition);
+            if (company.isEmpty() || position.isEmpty()) {
+                snack("Company and Job Title are required"); return;
+            }
+            ContentValues cv = new ContentValues();
+            cv.put("company",      company);
+            cv.put("position",     position);
+            cv.put("location",     UiUtils.getText(etLocation));
+            cv.put("start_date",   UiUtils.getText(etStart));
+            cv.put("end_date",     UiUtils.getText(etEnd));
+            cv.put("description",  UiUtils.getText(etDesc));
+            cv.put("achievements", UiUtils.getText(etAchieve));
+            String end = UiUtils.getText(etEnd);
+            cv.put("is_current",   end.equalsIgnoreCase("present") ? 1 : 0);
+            insertSection(DatabaseHelper.TABLE_EXPERIENCE, cv, "Experience");
+        });
+    }
+
+    private void showSkillDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName     = makeField(layout, "Skill Name * (e.g. Java, Leadership)");
+        TextInputEditText etLevel    = makeField(layout, "Level (Beginner / Intermediate / Advanced / Expert)");
+        TextInputEditText etCategory = makeField(layout, "Category (e.g. Programming, Soft Skills)");
+
+        showFormDialog("Add Skill", layout, () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Skill name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",     name);
+            cv.put("level",    UiUtils.getText(etLevel));
+            cv.put("category", UiUtils.getText(etCategory));
+            insertSection(DatabaseHelper.TABLE_SKILLS, cv, "Skill");
+        });
+    }
+
+    private void showProjectDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName   = makeField(layout, "Project Name *");
+        TextInputEditText etDesc   = makeMultilineField(layout, "Description");
+        TextInputEditText etTech   = makeField(layout, "Technologies Used");
+        TextInputEditText etUrl    = makeField(layout, "Project URL");
+        TextInputEditText etStart  = makeField(layout, "Start Date");
+        TextInputEditText etEnd    = makeField(layout, "End Date");
+
+        showFormDialog("Add Project", layout, () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Project name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",         name);
+            cv.put("description",  UiUtils.getText(etDesc));
+            cv.put("technologies", UiUtils.getText(etTech));
+            cv.put("url",          UiUtils.getText(etUrl));
+            cv.put("start_date",   UiUtils.getText(etStart));
+            cv.put("end_date",     UiUtils.getText(etEnd));
+            insertSection(DatabaseHelper.TABLE_PROJECTS, cv, "Project");
+        });
+    }
+
+    private void showCertificationDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName    = makeField(layout, "Certification Name *");
+        TextInputEditText etIssuer  = makeField(layout, "Issuing Organisation");
+        TextInputEditText etDate    = makeField(layout, "Issue Date");
+        TextInputEditText etExpiry  = makeField(layout, "Expiry Date (if any)");
+        TextInputEditText etCredId  = makeField(layout, "Credential ID");
+        TextInputEditText etUrl     = makeField(layout, "Credential URL");
+
+        showFormDialog("Add Certification", layout, () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Certification name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",          name);
+            cv.put("issuer",        UiUtils.getText(etIssuer));
+            cv.put("issue_date",    UiUtils.getText(etDate));
+            cv.put("expiry_date",   UiUtils.getText(etExpiry));
+            cv.put("credential_id", UiUtils.getText(etCredId));
+            cv.put("url",           UiUtils.getText(etUrl));
+            insertSection(DatabaseHelper.TABLE_CERTIFICATIONS, cv, "Certification");
+        });
+    }
+
+    private void showAwardDialog(String sectionName) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etTitle  = makeField(layout, sectionName + " Title *");
+        TextInputEditText etIssuer = makeField(layout, "Awarded By");
+        TextInputEditText etDate   = makeField(layout, "Date");
+        TextInputEditText etDesc   = makeMultilineField(layout, "Description");
+
+        showFormDialog("Add " + sectionName, layout, () -> {
+            String title = UiUtils.getText(etTitle);
+            if (title.isEmpty()) { snack("Title is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("title",       title);
+            cv.put("issuer",      UiUtils.getText(etIssuer));
+            cv.put("date",        UiUtils.getText(etDate));
+            cv.put("description", UiUtils.getText(etDesc));
+            insertSection(DatabaseHelper.TABLE_AWARDS, cv, sectionName);
+        });
+    }
+
+    private void showLanguageDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName  = makeField(layout, "Language *");
+        TextInputEditText etLevel = makeField(layout, "Proficiency (Basic / Conversational / Fluent / Native)");
+
+        showFormDialog("Add Language", layout, () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Language name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",        name);
+            cv.put("proficiency", UiUtils.getText(etLevel));
+            insertSection(DatabaseHelper.TABLE_LANGUAGES, cv, "Language");
+        });
+    }
+
+    private void showVolunteerDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etOrg   = makeField(layout, "Organisation *");
+        TextInputEditText etRole  = makeField(layout, "Role");
+        TextInputEditText etStart = makeField(layout, "Start Date");
+        TextInputEditText etEnd   = makeField(layout, "End Date");
+        TextInputEditText etDesc  = makeMultilineField(layout, "Description");
+
+        showFormDialog("Add Volunteer Work", layout, () -> {
+            String org = UiUtils.getText(etOrg);
+            if (org.isEmpty()) { snack("Organisation is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("organization", org);
+            cv.put("role",         UiUtils.getText(etRole));
+            cv.put("start_date",   UiUtils.getText(etStart));
+            cv.put("end_date",     UiUtils.getText(etEnd));
+            cv.put("description",  UiUtils.getText(etDesc));
+            insertSection(DatabaseHelper.TABLE_VOLUNTEER, cv, "Volunteer Work");
+        });
+    }
+
+    private void showReferenceDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName    = makeField(layout, "Reference Name *");
+        TextInputEditText etTitle   = makeField(layout, "Job Title");
+        TextInputEditText etCompany = makeField(layout, "Company");
+        TextInputEditText etEmail   = makeField(layout, "Email");
+        TextInputEditText etPhone   = makeField(layout, "Phone");
+
+        showFormDialog("Add Reference", layout, () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Reference name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",    name);
+            cv.put("title",   UiUtils.getText(etTitle));
+            cv.put("company", UiUtils.getText(etCompany));
+            cv.put("email",   UiUtils.getText(etEmail));
+            cv.put("phone",   UiUtils.getText(etPhone));
+            insertSection(DatabaseHelper.TABLE_REFERENCES, cv, "Reference");
+        });
+    }
+
+    private void showPublicationDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etTitle     = makeField(layout, "Publication Title *");
+        TextInputEditText etPublisher = makeField(layout, "Publisher / Journal");
+        TextInputEditText etDate      = makeField(layout, "Publication Date");
+        TextInputEditText etUrl       = makeField(layout, "URL / DOI");
+        TextInputEditText etDesc      = makeMultilineField(layout, "Description / Abstract");
+
+        showFormDialog("Add Publication", layout, () -> {
+            String title = UiUtils.getText(etTitle);
+            if (title.isEmpty()) { snack("Publication title is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("title",       title);
+            cv.put("publisher",   UiUtils.getText(etPublisher));
+            cv.put("date",        UiUtils.getText(etDate));
+            cv.put("url",         UiUtils.getText(etUrl));
+            cv.put("description", UiUtils.getText(etDesc));
+            insertSection(DatabaseHelper.TABLE_PUBLICATIONS, cv, "Publication");
+        });
+    }
+
+    private void showCustomSectionDialog() {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etSectionTitle = makeField(layout, "Section Title *");
+        TextInputEditText etContent      = makeMultilineField(layout, "Content");
+
+        showFormDialog("Add Custom Section", layout, () -> {
+            String sectionTitle = UiUtils.getText(etSectionTitle);
+            if (sectionTitle.isEmpty()) { snack("Section title is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("section_title", sectionTitle);
+            cv.put("content",       UiUtils.getText(etContent));
+            insertSection(DatabaseHelper.TABLE_CUSTOM_SECTIONS, cv, sectionTitle);
+        });
+    }
+
+    // ── Dialog / form helpers ─────────────────────────────────────────────────
+
+    /**
+     * Builds an AlertDialog with a scrollable form and a positive-button action.
+     * The action is NOT called if the dialog is dismissed via Cancel or Back.
+     * Validation inside the action can call {@link #snack} and return early.
+     */
+    private void showFormDialog(String title, LinearLayout formLayout, Runnable onConfirm) {
+        ScrollView scroll = new ScrollView(this);
+        scroll.addView(formLayout);
+
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setView(scroll)
+                .setPositiveButton("Add", (d, w) -> onConfirm.run())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private LinearLayout makeFormLayout() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int px = dp(24);
+        layout.setPadding(px, px / 2, px, px / 2);
+        return layout;
+    }
+
+    private TextInputEditText makeField(LinearLayout parent, String hint) {
+        TextInputLayout til = new TextInputLayout(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(0, dp(6), 0, 0);
+        til.setLayoutParams(lp);
+        til.setHint(hint);
+
+        TextInputEditText et = new TextInputEditText(this);
+        et.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        til.addView(et);
+        parent.addView(til);
+        return et;
+    }
+
+    private TextInputEditText makeMultilineField(LinearLayout parent, String hint) {
+        TextInputEditText et = makeField(parent, hint);
+        et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        et.setMinLines(3);
+        et.setGravity(Gravity.TOP | Gravity.START);
+        return et;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private void snack(String msg) {
+        UiUtils.showSnackbar(findViewById(android.R.id.content), msg);
+    }
+
+    // ── Export ────────────────────────────────────────────────────────────────
+
+    private void showExportDialog() {
+        if (currentResume == null) {
+            snack("Save the resume first before exporting"); return;
+        }
+        String[] options = {"Share as Plain Text (.txt)", "Share as HTML (.html)"};
+        new AlertDialog.Builder(this)
+                .setTitle("Export Resume")
+                .setItems(options, (d, which) -> exportResume(which == 1))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void exportResume(boolean asHtml) {
+        executor.execute(() -> {
+            Resume r = currentResume;
+            String color = r.getAccentColor() != null ? r.getAccentColor() : "#1565C0";
+            if (asHtml) {
+                File file = ExportUtils.exportAsHtml(this, r, buildHtml(r, color));
+                handler.post(() -> {
+                    if (file != null) ExportUtils.shareFile(this, file, "text/html");
+                    else snack("HTML export failed");
+                });
+            } else {
+                File file = ExportUtils.exportAsTxt(this, r, buildPlainText(r));
+                handler.post(() -> {
+                    if (file != null) ExportUtils.shareFile(this, file, "text/plain");
+                    else snack("Text export failed");
+                });
+            }
+        });
+    }
+
+    private String buildPlainText(Resume r) {
+        String title = r.getTitle() != null ? r.getTitle() : "Resume";
+        StringBuilder sb = new StringBuilder();
+        sb.append(title).append('\n');
+        sb.append(repeat('=', title.length())).append("\n\n");
+        appendField(sb, "Template",     r.getTemplate());
+        appendField(sb, "Font",         r.getFont());
+        appendField(sb, "Accent Color", r.getAccentColor());
+        if (r.getAtsScore() > 0)     sb.append("ATS Score:     ").append(r.getAtsScore()).append('\n');
+        if (r.getOverallScore() > 0) sb.append("Overall Score: ").append(r.getOverallScore()).append('\n');
+        return sb.toString();
+    }
+
+    private String buildHtml(Resume r, String color) {
+        return "<!DOCTYPE html><html><head>"
+             + "<meta charset='UTF-8'>"
+             + "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+             + "<style>body{font-family:sans-serif;margin:40px auto;max-width:800px;color:#1a1a1a}"
+             + "h1{color:" + color + ";border-bottom:2px solid " + color + ";padding-bottom:8px}"
+             + "h2{color:" + color + ";font-size:16px;margin-top:24px}</style></head><body>"
+             + "<h1>" + safe(r.getTitle()) + "</h1>"
+             + "<p style='color:#666;font-size:13px'>Template: " + safe(r.getTemplate()) + "</p>"
+             + "</body></html>";
+    }
+
+    private static String safe(String s) {
+        if (s == null) return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    private static void appendField(StringBuilder sb, String label, String value) {
+        if (value != null && !value.isEmpty())
+            sb.append(String.format("%-14s %s\n", label + ":", value));
+    }
+
+    private static String repeat(char c, int n) {
+        StringBuilder sb = new StringBuilder(n);
+        for (int i = 0; i < n; i++) sb.append(c);
+        return sb.toString();
     }
 }
