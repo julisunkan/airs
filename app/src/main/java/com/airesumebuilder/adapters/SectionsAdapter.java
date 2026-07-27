@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Displays the list of resume section entries inside ResumeBuilderActivity.
  * Each entry shows its type label, a primary title, an optional subtitle,
- * and a delete button.
+ * an edit button, and a delete button.
  */
 public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHolder> {
 
@@ -29,7 +29,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         public final String title;     // primary text, e.g. "B.Sc. Computer Science"
         public final String subtitle;  // secondary text, e.g. "MIT"
         public final long   id;        // row id in the DB table
-        public final String table;     // DB table name (for deletion)
+        public final String table;     // DB table name (for deletion / editing)
 
         public SectionItem(String type, String title, String subtitle,
                            long id, String table) {
@@ -41,19 +41,25 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
         }
     }
 
-    // ── Listener ──────────────────────────────────────────────────────────────
+    // ── Listeners ─────────────────────────────────────────────────────────────
 
     public interface OnDeleteListener {
         void onDelete(SectionItem item);
+    }
+
+    public interface OnEditListener {
+        void onEdit(SectionItem item);
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
 
     private final List<SectionItem> items          = new ArrayList<>();
     private final OnDeleteListener  deleteListener;
+    private final OnEditListener    editListener;
 
-    public SectionsAdapter(OnDeleteListener deleteListener) {
+    public SectionsAdapter(OnDeleteListener deleteListener, OnEditListener editListener) {
         this.deleteListener = deleteListener;
+        this.editListener   = editListener;
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -88,6 +94,10 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             holder.tvSubtitle.setVisibility(View.GONE);
         }
 
+        holder.btnEdit.setOnClickListener(v -> {
+            if (editListener != null) editListener.onEdit(item);
+        });
+
         holder.btnDelete.setOnClickListener(v -> {
             if (deleteListener != null) deleteListener.onDelete(item);
         });
@@ -101,9 +111,10 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
     // ── ViewHolder ────────────────────────────────────────────────────────────
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView      tvType;
-        final TextView      tvTitle;
-        final TextView      tvSubtitle;
+        final TextView       tvType;
+        final TextView       tvTitle;
+        final TextView       tvSubtitle;
+        final MaterialButton btnEdit;
         final MaterialButton btnDelete;
 
         ViewHolder(@NonNull View itemView) {
@@ -111,6 +122,7 @@ public class SectionsAdapter extends RecyclerView.Adapter<SectionsAdapter.ViewHo
             tvType     = itemView.findViewById(R.id.tvSectionType);
             tvTitle    = itemView.findViewById(R.id.tvSectionTitle);
             tvSubtitle = itemView.findViewById(R.id.tvSectionSubtitle);
+            btnEdit    = itemView.findViewById(R.id.btnEditSection);
             btnDelete  = itemView.findViewById(R.id.btnDeleteSection);
         }
     }

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -123,7 +124,7 @@ public class ResumeBuilderActivity extends AppCompatActivity {
     }
 
     private void setupSectionsRecyclerView() {
-        sectionsAdapter = new SectionsAdapter(this::onDeleteSection);
+        sectionsAdapter = new SectionsAdapter(this::onDeleteSection, this::onEditSection);
         RecyclerView rv = findViewById(R.id.rvSections);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(sectionsAdapter);
@@ -330,6 +331,318 @@ public class ResumeBuilderActivity extends AppCompatActivity {
                 UiUtils.showSnackbar(findViewById(android.R.id.content),
                         item.type + " entry removed");
             });
+        });
+    }
+
+    // ── Edit section ──────────────────────────────────────────────────────────
+
+    /** Tapped the pencil on a section row — load its DB row and open edit dialog. */
+    private void onEditSection(SectionsAdapter.SectionItem item) {
+        executor.execute(() -> {
+            SQLiteDatabase db = DatabaseHelper.getInstance(this).getReadableDatabase();
+            Bundle data = new Bundle();
+            try (Cursor c = db.query(item.table, null, "id = ?",
+                    new String[]{String.valueOf(item.id)}, null, null, null)) {
+                if (c.moveToFirst()) {
+                    for (int i = 0; i < c.getColumnCount(); i++) {
+                        data.putString(c.getColumnName(i), c.isNull(i) ? "" : c.getString(i));
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "onEditSection load failed: " + item.table, e);
+            }
+            handler.post(() -> routeToEditDialog(item, data));
+        });
+    }
+
+    /** Dispatch to the right pre-populated edit dialog on the UI thread. */
+    private void routeToEditDialog(SectionsAdapter.SectionItem item, Bundle data) {
+        switch (item.table) {
+            case DatabaseHelper.TABLE_EDUCATION:
+                showEditEducationDialog(item.id, data);      break;
+            case DatabaseHelper.TABLE_EXPERIENCE:
+                showEditExperienceDialog(item.id, data);     break;
+            case DatabaseHelper.TABLE_SKILLS:
+                showEditSkillDialog(item.id, data);          break;
+            case DatabaseHelper.TABLE_PROJECTS:
+                showEditProjectDialog(item.id, data);        break;
+            case DatabaseHelper.TABLE_CERTIFICATIONS:
+                showEditCertificationDialog(item.id, data);  break;
+            case DatabaseHelper.TABLE_AWARDS:
+                showEditAwardDialog(item.id, data);          break;
+            case DatabaseHelper.TABLE_LANGUAGES:
+                showEditLanguageDialog(item.id, data);       break;
+            case DatabaseHelper.TABLE_VOLUNTEER:
+                showEditVolunteerDialog(item.id, data);      break;
+            case DatabaseHelper.TABLE_REFERENCES:
+                showEditReferenceDialog(item.id, data);      break;
+            case DatabaseHelper.TABLE_PUBLICATIONS:
+                showEditPublicationDialog(item.id, data);    break;
+            case DatabaseHelper.TABLE_CUSTOM_SECTIONS:
+                showEditCustomSectionDialog(item.id, data);  break;
+            default:
+                snack("Edit not supported for this section type");
+        }
+    }
+
+    // ── Edit dialogs (pre-populated) ──────────────────────────────────────────
+
+    private void showEditEducationDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etInstitution = makeFieldPre(layout, "Institution *",        d.getString("institution"));
+        TextInputEditText etDegree      = makeFieldPre(layout, "Degree",               d.getString("degree"));
+        TextInputEditText etField       = makeFieldPre(layout, "Field of Study",       d.getString("field"));
+        TextInputEditText etStart       = makeFieldPre(layout, "Start Year",           d.getString("start_date"));
+        TextInputEditText etEnd         = makeFieldPre(layout, "End Year",             d.getString("end_date"));
+        TextInputEditText etGpa         = makeFieldPre(layout, "GPA",                  d.getString("gpa"));
+        TextInputEditText etDesc        = makeMultilineFieldPre(layout, "Description", d.getString("description"));
+
+        showFormDialog("Edit Education", layout, "Save", () -> {
+            String institution = UiUtils.getText(etInstitution);
+            if (institution.isEmpty()) { snack("Institution is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("institution", institution);
+            cv.put("degree",      UiUtils.getText(etDegree));
+            cv.put("field",       UiUtils.getText(etField));
+            cv.put("start_date",  UiUtils.getText(etStart));
+            cv.put("end_date",    UiUtils.getText(etEnd));
+            cv.put("gpa",         UiUtils.getText(etGpa));
+            cv.put("description", UiUtils.getText(etDesc));
+            updateSection(DatabaseHelper.TABLE_EDUCATION, cv, rowId, "Education");
+        });
+    }
+
+    private void showEditExperienceDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etCompany  = makeFieldPre(layout, "Company *",              d.getString("company"));
+        TextInputEditText etPosition = makeFieldPre(layout, "Job Title *",            d.getString("position"));
+        TextInputEditText etLocation = makeFieldPre(layout, "Location",               d.getString("location"));
+        TextInputEditText etStart    = makeFieldPre(layout, "Start Date",             d.getString("start_date"));
+        TextInputEditText etEnd      = makeFieldPre(layout, "End Date ('Present'…)",  d.getString("end_date"));
+        TextInputEditText etDesc     = makeMultilineFieldPre(layout, "Responsibilities",  d.getString("description"));
+        TextInputEditText etAchieve  = makeMultilineFieldPre(layout, "Key Achievements",  d.getString("achievements"));
+
+        showFormDialog("Edit Experience", layout, "Save", () -> {
+            String company  = UiUtils.getText(etCompany);
+            String position = UiUtils.getText(etPosition);
+            if (company.isEmpty() || position.isEmpty()) {
+                snack("Company and Job Title are required"); return;
+            }
+            ContentValues cv = new ContentValues();
+            cv.put("company",      company);
+            cv.put("position",     position);
+            cv.put("location",     UiUtils.getText(etLocation));
+            cv.put("start_date",   UiUtils.getText(etStart));
+            cv.put("end_date",     UiUtils.getText(etEnd));
+            cv.put("description",  UiUtils.getText(etDesc));
+            cv.put("achievements", UiUtils.getText(etAchieve));
+            String end = UiUtils.getText(etEnd);
+            cv.put("is_current",   end.equalsIgnoreCase("present") ? 1 : 0);
+            updateSection(DatabaseHelper.TABLE_EXPERIENCE, cv, rowId, "Experience");
+        });
+    }
+
+    private void showEditSkillDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName     = makeFieldPre(layout, "Skill Name *",  d.getString("name"));
+        TextInputEditText etLevel    = makeFieldPre(layout, "Level",         d.getString("level"));
+        TextInputEditText etCategory = makeFieldPre(layout, "Category",      d.getString("category"));
+
+        showFormDialog("Edit Skill", layout, "Save", () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Skill name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",     name);
+            cv.put("level",    UiUtils.getText(etLevel));
+            cv.put("category", UiUtils.getText(etCategory));
+            updateSection(DatabaseHelper.TABLE_SKILLS, cv, rowId, "Skill");
+        });
+    }
+
+    private void showEditProjectDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName  = makeFieldPre(layout, "Project Name *",  d.getString("name"));
+        TextInputEditText etDesc  = makeMultilineFieldPre(layout, "Description",  d.getString("description"));
+        TextInputEditText etTech  = makeFieldPre(layout, "Technologies",    d.getString("technologies"));
+        TextInputEditText etUrl   = makeFieldPre(layout, "Project URL",     d.getString("url"));
+        TextInputEditText etStart = makeFieldPre(layout, "Start Date",      d.getString("start_date"));
+        TextInputEditText etEnd   = makeFieldPre(layout, "End Date",        d.getString("end_date"));
+
+        showFormDialog("Edit Project", layout, "Save", () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Project name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",         name);
+            cv.put("description",  UiUtils.getText(etDesc));
+            cv.put("technologies", UiUtils.getText(etTech));
+            cv.put("url",          UiUtils.getText(etUrl));
+            cv.put("start_date",   UiUtils.getText(etStart));
+            cv.put("end_date",     UiUtils.getText(etEnd));
+            updateSection(DatabaseHelper.TABLE_PROJECTS, cv, rowId, "Project");
+        });
+    }
+
+    private void showEditCertificationDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName   = makeFieldPre(layout, "Certification Name *", d.getString("name"));
+        TextInputEditText etIssuer = makeFieldPre(layout, "Issuing Organisation",  d.getString("issuer"));
+        TextInputEditText etDate   = makeFieldPre(layout, "Issue Date",            d.getString("issue_date"));
+        TextInputEditText etExpiry = makeFieldPre(layout, "Expiry Date",           d.getString("expiry_date"));
+        TextInputEditText etCredId = makeFieldPre(layout, "Credential ID",         d.getString("credential_id"));
+        TextInputEditText etUrl    = makeFieldPre(layout, "Credential URL",        d.getString("url"));
+
+        showFormDialog("Edit Certification", layout, "Save", () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Certification name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",          name);
+            cv.put("issuer",        UiUtils.getText(etIssuer));
+            cv.put("issue_date",    UiUtils.getText(etDate));
+            cv.put("expiry_date",   UiUtils.getText(etExpiry));
+            cv.put("credential_id", UiUtils.getText(etCredId));
+            cv.put("url",           UiUtils.getText(etUrl));
+            updateSection(DatabaseHelper.TABLE_CERTIFICATIONS, cv, rowId, "Certification");
+        });
+    }
+
+    private void showEditAwardDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etTitle  = makeFieldPre(layout, "Title *",        d.getString("title"));
+        TextInputEditText etIssuer = makeFieldPre(layout, "Awarded By",     d.getString("issuer"));
+        TextInputEditText etDate   = makeFieldPre(layout, "Date",           d.getString("date"));
+        TextInputEditText etDesc   = makeMultilineFieldPre(layout, "Description", d.getString("description"));
+
+        showFormDialog("Edit Award / Achievement", layout, "Save", () -> {
+            String title = UiUtils.getText(etTitle);
+            if (title.isEmpty()) { snack("Title is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("title",       title);
+            cv.put("issuer",      UiUtils.getText(etIssuer));
+            cv.put("date",        UiUtils.getText(etDate));
+            cv.put("description", UiUtils.getText(etDesc));
+            updateSection(DatabaseHelper.TABLE_AWARDS, cv, rowId, "Award");
+        });
+    }
+
+    private void showEditLanguageDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName  = makeFieldPre(layout, "Language *",    d.getString("name"));
+        TextInputEditText etLevel = makeFieldPre(layout, "Proficiency",   d.getString("proficiency"));
+
+        showFormDialog("Edit Language", layout, "Save", () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Language name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",        name);
+            cv.put("proficiency", UiUtils.getText(etLevel));
+            updateSection(DatabaseHelper.TABLE_LANGUAGES, cv, rowId, "Language");
+        });
+    }
+
+    private void showEditVolunteerDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etOrg   = makeFieldPre(layout, "Organisation *", d.getString("organization"));
+        TextInputEditText etRole  = makeFieldPre(layout, "Role",           d.getString("role"));
+        TextInputEditText etStart = makeFieldPre(layout, "Start Date",     d.getString("start_date"));
+        TextInputEditText etEnd   = makeFieldPre(layout, "End Date",       d.getString("end_date"));
+        TextInputEditText etDesc  = makeMultilineFieldPre(layout, "Description", d.getString("description"));
+
+        showFormDialog("Edit Volunteer Work", layout, "Save", () -> {
+            String org = UiUtils.getText(etOrg);
+            if (org.isEmpty()) { snack("Organisation is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("organization", org);
+            cv.put("role",         UiUtils.getText(etRole));
+            cv.put("start_date",   UiUtils.getText(etStart));
+            cv.put("end_date",     UiUtils.getText(etEnd));
+            cv.put("description",  UiUtils.getText(etDesc));
+            updateSection(DatabaseHelper.TABLE_VOLUNTEER, cv, rowId, "Volunteer Work");
+        });
+    }
+
+    private void showEditReferenceDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etName    = makeFieldPre(layout, "Reference Name *", d.getString("name"));
+        TextInputEditText etTitle   = makeFieldPre(layout, "Job Title",        d.getString("title"));
+        TextInputEditText etCompany = makeFieldPre(layout, "Company",          d.getString("company"));
+        TextInputEditText etEmail   = makeFieldPre(layout, "Email",            d.getString("email"));
+        TextInputEditText etPhone   = makeFieldPre(layout, "Phone",            d.getString("phone"));
+
+        showFormDialog("Edit Reference", layout, "Save", () -> {
+            String name = UiUtils.getText(etName);
+            if (name.isEmpty()) { snack("Reference name is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("name",    name);
+            cv.put("title",   UiUtils.getText(etTitle));
+            cv.put("company", UiUtils.getText(etCompany));
+            cv.put("email",   UiUtils.getText(etEmail));
+            cv.put("phone",   UiUtils.getText(etPhone));
+            updateSection(DatabaseHelper.TABLE_REFERENCES, cv, rowId, "Reference");
+        });
+    }
+
+    private void showEditPublicationDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etTitle     = makeFieldPre(layout, "Publication Title *", d.getString("title"));
+        TextInputEditText etPublisher = makeFieldPre(layout, "Publisher / Journal", d.getString("publisher"));
+        TextInputEditText etDate      = makeFieldPre(layout, "Publication Date",    d.getString("date"));
+        TextInputEditText etUrl       = makeFieldPre(layout, "URL / DOI",           d.getString("url"));
+        TextInputEditText etDesc      = makeMultilineFieldPre(layout, "Description / Abstract", d.getString("description"));
+
+        showFormDialog("Edit Publication", layout, "Save", () -> {
+            String title = UiUtils.getText(etTitle);
+            if (title.isEmpty()) { snack("Publication title is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("title",       title);
+            cv.put("publisher",   UiUtils.getText(etPublisher));
+            cv.put("date",        UiUtils.getText(etDate));
+            cv.put("url",         UiUtils.getText(etUrl));
+            cv.put("description", UiUtils.getText(etDesc));
+            updateSection(DatabaseHelper.TABLE_PUBLICATIONS, cv, rowId, "Publication");
+        });
+    }
+
+    private void showEditCustomSectionDialog(long rowId, Bundle d) {
+        LinearLayout layout = makeFormLayout();
+        TextInputEditText etSectionTitle = makeFieldPre(layout, "Section Title *", d.getString("section_title"));
+        TextInputEditText etContent      = makeMultilineFieldPre(layout, "Content", d.getString("content"));
+
+        showFormDialog("Edit Section", layout, "Save", () -> {
+            String sectionTitle = UiUtils.getText(etSectionTitle);
+            if (sectionTitle.isEmpty()) { snack("Section title is required"); return; }
+            ContentValues cv = new ContentValues();
+            cv.put("section_title", sectionTitle);
+            cv.put("content",       UiUtils.getText(etContent));
+            updateSection(DatabaseHelper.TABLE_CUSTOM_SECTIONS, cv, rowId, sectionTitle);
+        });
+    }
+
+    // ── Update helper ─────────────────────────────────────────────────────────
+
+    /**
+     * Updates a single row in {@code table} and refreshes the section list.
+     * Always called from the UI thread; runs DB work on the background executor.
+     */
+    private void updateSection(String table, ContentValues cv, long rowId, String label) {
+        executor.execute(() -> {
+            try {
+                DatabaseHelper.getInstance(this).getWritableDatabase()
+                        .update(table, cv, "id = ?", new String[]{String.valueOf(rowId)});
+                long resumeId = (currentResume != null) ? currentResume.getId() : -1;
+                List<SectionsAdapter.SectionItem> updated =
+                        (resumeId > 0) ? buildSectionList(resumeId) : new ArrayList<>();
+                handler.post(() -> {
+                    sectionsAdapter.setItems(updated);
+                    showAutoSavedIndicator();
+                    UiUtils.showSnackbar(
+                            findViewById(android.R.id.content), label + " updated");
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "updateSection failed: " + table, e);
+                handler.post(() -> UiUtils.showSnackbar(
+                        findViewById(android.R.id.content),
+                        "Failed to update " + label + ": " + e.getMessage()));
+            }
         });
     }
 
@@ -679,13 +992,18 @@ public class ResumeBuilderActivity extends AppCompatActivity {
      * Validation inside the action can call {@link #snack} and return early.
      */
     private void showFormDialog(String title, LinearLayout formLayout, Runnable onConfirm) {
+        showFormDialog(title, formLayout, "Add", onConfirm);
+    }
+
+    private void showFormDialog(String title, LinearLayout formLayout,
+                                String positiveLabel, Runnable onConfirm) {
         ScrollView scroll = new ScrollView(this);
         scroll.addView(formLayout);
 
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setView(scroll)
-                .setPositiveButton("Add", (d, w) -> onConfirm.run())
+                .setPositiveButton(positiveLabel, (d, w) -> onConfirm.run())
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -722,6 +1040,20 @@ public class ResumeBuilderActivity extends AppCompatActivity {
                 | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         et.setMinLines(3);
         et.setGravity(Gravity.TOP | Gravity.START);
+        return et;
+    }
+
+    /** Same as {@link #makeField} but pre-populated with {@code value}. */
+    private TextInputEditText makeFieldPre(LinearLayout parent, String hint, String value) {
+        TextInputEditText et = makeField(parent, hint);
+        if (value != null && !value.isEmpty()) et.setText(value);
+        return et;
+    }
+
+    /** Same as {@link #makeMultilineField} but pre-populated with {@code value}. */
+    private TextInputEditText makeMultilineFieldPre(LinearLayout parent, String hint, String value) {
+        TextInputEditText et = makeMultilineField(parent, hint);
+        if (value != null && !value.isEmpty()) et.setText(value);
         return et;
     }
 

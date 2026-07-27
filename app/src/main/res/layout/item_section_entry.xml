@@ -54,6 +54,18 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditSection"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✎"
+            android:textSize="16sp"
+            android:minWidth="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
+            android:contentDescription="Edit section" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeleteSection"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
@@ -61,7 +73,7 @@
             android:text="✕"
             android:textSize="16sp"
             android:minWidth="0dp"
-            android:paddingStart="8dp"
+            android:paddingStart="4dp"
             android:paddingEnd="8dp"
             android:contentDescription="Remove section" />
 
