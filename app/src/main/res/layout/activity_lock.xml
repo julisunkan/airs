@@ -89,7 +89,7 @@
     <!-- PIN Keypad -->
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/gridPin"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tvErrorPin"
         app:layout_constraintBottom_toTopOf="@id/btnBiometric"

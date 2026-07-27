@@ -1,7 +1,9 @@
 package com.airesumebuilder.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -79,12 +81,16 @@ public class LockActivity extends AppCompatActivity {
 
             androidx.gridlayout.widget.GridLayout.LayoutParams lp =
                     new androidx.gridlayout.widget.GridLayout.LayoutParams();
+            // width=0 + columnSpec weight evenly divides the GridLayout's fixed
+            // horizontal width (0dp / fill-constraints in the XML).
             lp.width  = 0;
-            lp.height = 0;
+            // Give each button a concrete height so it always has a real touch
+            // target regardless of the GridLayout's own height.
+            lp.height = dpToPx(64);
             lp.columnSpec = androidx.gridlayout.widget.GridLayout.spec(
                     androidx.gridlayout.widget.GridLayout.UNDEFINED, 1f);
             lp.rowSpec = androidx.gridlayout.widget.GridLayout.spec(
-                    androidx.gridlayout.widget.GridLayout.UNDEFINED, 1f);
+                    androidx.gridlayout.widget.GridLayout.UNDEFINED);
             lp.setMargins(4, 4, 4, 4);
             btn.setLayoutParams(lp);
 
@@ -176,5 +182,14 @@ public class LockActivity extends AppCompatActivity {
     public void onBackPressed() {
         // Prevent dismissing the lock screen with Back
         finishAffinity();
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    /** Converts dp to pixels using the current display density. */
+    private int dpToPx(int dp) {
+        return Math.round(TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dp,
+                Resources.getSystem().getDisplayMetrics()));
     }
 }
