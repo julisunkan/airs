@@ -16,12 +16,11 @@
     <path
         android:fillColor="#1565C0"
         android:pathData="M34,56 L60,56 L60,62 L34,62Z" />
-    <circle
+    <!-- Circle (cx=68, cy=68, r=12) expressed as a path — Android VectorDrawable
+         does not support the <circle> element; only <path>, <group>, <clip-path> -->
+    <path
         android:fillColor="#E91E63"
-        android:cx="68"
-        cy="68"
-        android:cy="68"
-        android:r="12" />
+        android:pathData="M68,56 C74.627,56 80,61.373 80,68 C80,74.627 74.627,80 68,80 C61.373,80 56,74.627 56,68 C56,61.373 61.373,56 68,56Z" />
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M64,68 L67,71 L73,65" />
