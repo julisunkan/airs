@@ -14,7 +14,7 @@ import com.airesumebuilder.models.ChatMessage;
 import com.airesumebuilder.network.GroqClient;
 import com.airesumebuilder.utils.UiUtils;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.floatingactionbutton.SmallFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
@@ -53,7 +53,7 @@ public class CareerCoachActivity extends AppCompatActivity {
         etMessage = findViewById(R.id.etMessage);
         llTyping  = findViewById(R.id.llTyping);
 
-        SmallFloatingActionButton btnSend = findViewById(R.id.btnSend);
+        FloatingActionButton btnSend = findViewById(R.id.btnSend);
         btnSend.setOnClickListener(v -> sendMessage());
 
         etMessage.setOnEditorActionListener((v, actionId, event) -> {
