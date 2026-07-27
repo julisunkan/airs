@@ -49,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         setupDashboardGrid();
         setupRecentResumes();
         setupFab();
+
+        // Wire up the "Create Resume" button in the welcome card
+        View btnCreate = findViewById(R.id.btnCreateResume);
+        if (btnCreate != null) btnCreate.setOnClickListener(v -> createNewResume());
     }
 
     @Override
