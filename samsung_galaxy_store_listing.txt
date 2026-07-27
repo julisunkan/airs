@@ -1,119 +1,101 @@
 ================================================================
-  AI EMAIL WRITER — SAMSUNG GALAXY STORE LISTING
+  AI RESUME BUILDER — SAMSUNG GALAXY STORE LISTING
 ================================================================
 
 ----------------------------------------------------------------
 APP NAME
 ----------------------------------------------------------------
-AI Email Writer – Groq Powered
+AI Resume Builder
 
 ----------------------------------------------------------------
 SHORT DESCRIPTION (80 characters max)
 ----------------------------------------------------------------
-Generate professional emails instantly with AI. Edit & save.
+Build polished resumes, improve your career story, and get AI guidance.
 
 ----------------------------------------------------------------
 FULL DESCRIPTION (4,000 characters max)
 ----------------------------------------------------------------
-Struggling to find the right words for your emails? AI Email
-Writer takes the stress out of professional communication by
-generating polished, context-aware emails in seconds — powered
-by Groq's lightning-fast llama-3.3-70b-versatile AI model.
+Create a professional resume with confidence using AI Resume Builder — a
+private, offline-first career toolkit for building resumes, preparing for
+interviews, writing cover letters, and managing your job search.
 
-Whether you're drafting a job application, following up with a
-client, writing a customer support reply, or sending a formal
-business proposal, AI Email Writer crafts the perfect message
-every time. Just describe what you need, choose your tone and
-style, and let the AI do the writing.
+Build as many resumes as you need. Add your profile, professional summary,
+experience, education, skills, projects, certifications, awards, volunteer
+work, languages, publications, and custom sections. Choose a professional
+template, edit your content, preview your resume, and export or share it when
+you are ready.
+
+AI CAREER TOOLS
+----------------
+• AI resume review and scoring
+• Cover letter generation from your resume and a job description
+• Interview preparation for HR, technical, and behavioral questions
+• Career Coach chat for practical career guidance
+• Portfolio bio and project content generation
+• Resume, profile, and job-application writing assistance
+
+YOUR COMPLETE CAREER WORKSPACE
+------------------------------
+• Resume Builder — create and manage multiple resumes
+• Templates — choose a style for your target role
+• Job Tracker — track companies, positions, statuses, dates, offers, and notes
+• Analytics — review resume progress, AI usage, exports, and activity
+• Favorites — keep important resumes close at hand
+• Search — quickly find resumes, jobs, and saved content
+• Backup & Restore — keep a local copy of your career data
+
+PRIVATE BY DESIGN
+-----------------
+No online account is required. Resume, profile, favorites, job-tracker, and
+settings data are stored locally on your device. AI features use your own
+Groq API key, which is stored securely in the app's encrypted preferences.
+Your key is never included in the app or committed to the project.
+
+PERSONALIZED EXPERIENCE
+-----------------------
+Enjoy a modern Material Design 3 interface with light, dark, AMOLED, and
+system themes. The layout supports portrait and landscape orientations, with
+clear empty states, progress indicators, and accessible controls.
 
 HOW IT WORKS
-─────────────
-1. Enter the recipient and purpose of your email
-2. Choose the tone, type, length, and language
-3. Tap "Generate Email" — your professional email is ready
-4. Edit the subject or body directly if you want tweaks
-5. Save, copy, or share with one tap
-
-POWERFUL CUSTOMISATION
-───────────────────────
-Every email is different. That's why AI Email Writer gives you
-full control over how your message sounds and reads:
-
-• 10 Tones — Professional, Friendly, Formal, Casual,
-  Persuasive, Empathetic, Assertive, Diplomatic, Enthusiastic,
-  and Concise
-• 20+ Email Types — Business, Job Application, Sales, Customer
-  Support, Follow-Up, Thank You, Apology, Invitation, Academic,
-  Cold Outreach, and more
-• 3 Lengths — Short, Medium, or Long to match the occasion
-• 9 Languages — English, Spanish, French, German, Italian,
-  Portuguese, Arabic, Chinese, and Japanese
-
-YOUR EMAILS, YOUR WAY
-──────────────────────
-AI Email Writer doesn't just generate — it lets you take full
-ownership of every message. Tap directly on the subject or body
-to edit any part of a generated email before saving. Go back
-to any saved email later and edit it again from your History.
-Nothing is locked; every word is yours to change.
-
-YOUR DATA STAYS ON YOUR DEVICE
-────────────────────────────────
-All generated emails are stored privately in a local database
-on your phone — no cloud accounts, no sign-ups, no data
-harvesting. Your API key is stored securely in the app's
-private storage and never shared.
-
-BEAUTIFUL, COLOURFUL INTERFACE
-────────────────────────────────
-Enjoy a vibrant Material Design 3 interface featuring a rich
-earth-tone palette of greens, oranges, yellows, browns, and
-reds. Dark mode is supported automatically, and the layout
-adapts to both portrait and landscape orientations.
-
-STAY ORGANISED
-───────────────
-• Email History — browse every email you've generated
-• Favourites — star your best emails for quick access
-• Search — instantly find any email by recipient, subject,
-  purpose, or content
-• Sort — view emails newest-first or oldest-first
+------------
+1. Create your profile and start a resume.
+2. Add sections such as experience, education, skills, and projects.
+3. Choose a template and preview your resume.
+4. Use AI tools to review content, write a cover letter, or prepare for an
+   interview.
+5. Export, share, favorite, or continue editing your work.
 
 REQUIREMENTS
-─────────────
-A free Groq API key is required for email generation. Sign up
-at console.groq.com — it takes under two minutes and the free
-tier is generous. Enter your key once in Settings and you're
-ready to generate.
+------------
+A free Groq API key and internet connection are required for AI generation
+only. Local resume editing, searching, favorites, job tracking, and backup
+features work without an account and are designed to work offline.
 
 ----------------------------------------------------------------
-FEATURES LIST (for store feature bullets)
+FEATURES LIST
 ----------------------------------------------------------------
-✦ AI-generated professional emails in seconds
-✦ Powered by Groq llama-3.3-70b-versatile model
-✦ Fully editable subject and body after generation
-✦ Save, copy, and share emails with one tap
-✦ Edit saved emails at any time from History
-✦ 10 writing tones for every situation
-✦ 20+ email types covering business and personal use
-✦ Short, Medium, and Long length options
-✦ 9 language support including Arabic and Chinese
-✦ Favourites system to star important emails
-✦ Real-time search across all saved emails
-✦ 100% offline storage — no cloud account needed
-✦ Dark mode and landscape orientation supported
-✦ Vibrant Material Design 3 interface
-✦ Secure local API key storage
+✦ Build and manage multiple professional resumes
+✦ AI resume review, scoring, and improvement suggestions
+✦ Cover letter generator
+✦ Interview preparation and Career Coach chat
+✦ Portfolio content generator
+✦ Professional resume templates
+✦ Job application tracker with statuses and notes
+✦ Analytics for resume progress and career activity
+✦ Search, filters, favorites, and local backup
+✦ Secure Groq API key storage
+✦ No online account required
+✦ Light, dark, AMOLED, and system themes
+✦ Material Design 3 interface
+✦ Portrait and landscape support
 
 ----------------------------------------------------------------
-KEYWORDS / TAGS (comma-separated, max 100 characters each)
+KEYWORDS / TAGS
 ----------------------------------------------------------------
-email writer, AI email, professional email, email generator,
-Groq AI, email assistant, business email, email composer,
-job application email, email template, writing assistant,
-email tool, AI writing, productivity, communication,
-formal email, office tools, email helper, smart email,
-multilingual email
+AI resume builder, resume maker, CV builder, job search, cover letter,
+interview preparation, career coach, job tracker, resume templates, ATS,
+portfolio builder, career toolkit, Groq AI, professional resume
 
 ----------------------------------------------------------------
 CATEGORY
@@ -131,20 +113,18 @@ CONTENT ADVISORY
 ----------------------------------------------------------------
 • No ads
 • No in-app purchases
-• Requires internet connection for AI generation only
-• All other features work fully offline
+• Internet connection required for AI features only
+• Local career data and resume editing work offline
 
 ----------------------------------------------------------------
 WHAT'S NEW — VERSION 1.0.0
 ----------------------------------------------------------------
-• Initial release
-• AI email generation with 20+ types and 10 tones
-• Inline editing of generated subject and body
-• Edit saved emails directly from History and Favourites
-• Multi-language support (9 languages)
-• Vibrant green / orange / yellow / brown / red UI theme
-• Dark mode support
-• Local SQLite storage — your data never leaves your device
+• Initial AI Resume Builder release
+• Resume builder with multiple templates and editable sections
+• AI resume review, cover letters, interview prep, and Career Coach
+• Job tracker, analytics, favorites, and local backup
+• Secure API key storage
+• Light, dark, AMOLED, and system themes
 
 ================================================================
   END OF LISTING

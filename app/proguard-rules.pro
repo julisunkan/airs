@@ -41,5 +41,5 @@
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 # Keep model classes
--keep class com.julisunkan.aiemail.model.** { *; }
--keep class com.julisunkan.aiemail.network.** { *; }
+-keep class com.airesumebuilder.models.** { *; }
+-keep class com.airesumebuilder.network.** { *; }

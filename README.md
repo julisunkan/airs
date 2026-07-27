@@ -1,370 +1,168 @@
-# AI Email Writer - Android Application
+# AI Resume Builder
 
-## Overview
+AI Resume Builder is a Java Android application for creating, improving, and
+managing professional resumes locally on a device. It combines a guided resume
+builder with AI-assisted writing tools powered by the Groq API.
 
-AI Email Writer is a professional-grade Android application that leverages the power of the Groq AI API to generate high-quality, context-aware emails. The app is built with Java and follows Material Design 3 guidelines, offering a clean and intuitive user experience.
+The project follows the product direction in
+`attached_assets/Pasted--Comprehensive-Replit-AI-Prompt-Build-AI-Resume-Builder_1785185883017.txt`.
+The application is designed for offline-first use: local resume, profile, job
+tracker, favorites, and settings data remain on the device, while AI features
+require the user's own Groq API key and an internet connection.
 
 ## Features
 
-### Core Functionality
-- **AI-Powered Email Generation**: Generate professional emails using Groq's llama-3.3-70b-versatile model
-- **Multiple Email Types**: Support for 20+ email types including Business, Customer Support, Job Application, Sales, Academic, and more
-- **Tone Selection**: Choose from 10 different tones (Professional, Friendly, Formal, Casual, etc.)
-- **Email Length Control**: Select between Short, Medium, and Long formats
-- **Multi-Language Support**: Generate emails in 9 languages including English, Spanish, French, German, Italian, Portuguese, Arabic, Chinese, and Japanese
+### Resume workspace
 
-### Email Management
-- **Local SQLite Database**: All emails stored securely on device
-- **Email History**: View all previously generated emails
-- **Favorites System**: Mark and organize favorite emails
-- **Search Functionality**: Real-time search across recipients, purposes, subjects, and content
-- **Copy & Share**: Easily copy emails to clipboard or share via other apps
+- Create and manage multiple resumes
+- Add profile information, summaries, objectives, education, experience,
+  skills, projects, certifications, awards, volunteer work, languages,
+  interests, references, publications, conferences, achievements, military
+  service, memberships, and custom sections
+- Choose from professional resume templates
+- Edit, duplicate, preview, delete, favorite, and search resumes
+- Export and share resume content
 
-### User Interface
-- **Material Design 3**: Modern, responsive UI with smooth animations
-- **Dark Mode Support**: Automatic dark theme support
-- **Landscape Support**: Full landscape orientation support
-- **Empty States**: Friendly empty state illustrations
-- **Progress Indicators**: Visual feedback during API calls
+### AI career tools
 
-### Settings
-- **API Key Management**: Secure storage of Groq API keys
-- **Default Preferences**: Set default tone, length, and language
-- **Data Management**: Clear all history with confirmation
-- **About & Privacy**: Access privacy policy and app information
+- AI resume review and scoring
+- Cover letter generation
+- Interview preparation
+- Career Coach chat
+- Portfolio content generation
+- Groq model configuration through AI Settings
 
-## Technical Stack
+### Career management
 
-### Architecture
-- **Pattern**: MVC (Model-View-Controller)
-- **Language**: Java (no Kotlin)
-- **Minimum SDK**: API 24 (Android 7.0)
-- **Target SDK**: API 34 (Android 14)
+- Job application tracker with statuses, dates, notes, search, and filters
+- Analytics for resumes, AI usage, exports, completion, and recent activity
+- Favorites and global search
+- Local backup and restore
+- Optional notifications and reminders
 
-### Dependencies
-- **AndroidX**: AppCompat, ConstraintLayout, RecyclerView, CardView
-- **Material Design 3**: Material Components
-- **Networking**: OkHttp 4.11.0
-- **JSON**: Gson 2.10.1
-- **Database**: SQLite (built-in)
+### Privacy and personalization
 
-### Key Libraries
-```gradle
-implementation 'androidx.appcompat:appcompat:1.6.1'
-implementation 'com.google.android.material:material:1.10.0'
-implementation 'androidx.recyclerview:recyclerview:1.3.2'
-implementation 'androidx.cardview:cardview:1.0.0'
-implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-implementation 'com.google.code.gson:gson:2.10.1'
+- No online account is required
+- Local SQLite storage
+- Encrypted storage for the Groq API key
+- PIN lock and biometric unlock support
+- Light, dark, AMOLED, and system themes
+- Material Design 3 interface
+- Portrait and landscape layouts
+
+## Technology
+
+| Layer | Technology |
+| --- | --- |
+| Language | Java (no Kotlin) |
+| Package | `com.airesumebuilder` |
+| Minimum SDK | API 26 (Android 8.0) |
+| Target / compile SDK | API 34 (Android 14) |
+| UI | Material Design 3, AndroidX, View Binding |
+| Persistence | SQLite through `DatabaseHelper` and repositories |
+| Networking | Retrofit 2 and OkHttp |
+| JSON | Gson |
+| Images | Glide |
+| Preferences | DataStore and secure preferences where appropriate |
+| Security | Android Keystore, EncryptedSharedPreferences, Biometric |
+| AI provider | Groq API |
+
+## Project structure
+
+```text
+app/src/main/
+├── java/com/airesumebuilder/
+│   ├── AIResumeApp.java
+│   ├── activities/       # Dashboard, resume, AI, job, settings, and help screens
+│   ├── adapters/         # RecyclerView adapters
+│   ├── database/         # SQLite schema and database helper
+│   ├── models/           # Resume, profile, job, and supporting models
+│   ├── network/          # Groq API client and request/response models
+│   ├── notifications/    # Notification channels and receivers
+│   ├── repositories/     # Background data access
+│   ├── security/         # Secure preferences and lock helpers
+│   └── utils/            # Export, date, preference, and UI utilities
+├── res/
+│   ├── layout/
+│   ├── menu/
+│   ├── values/
+│   └── xml/
+└── AndroidManifest.xml
 ```
 
-## Project Structure
-
-```
-app/
-├── src/main/
-│   ├── java/com/julisunkan/aiemail/
-│   │   ├── MainActivity.java              # Main email generation screen
-│   │   ├── HistoryActivity.java           # Email history with search
-│   │   ├── FavoritesActivity.java         # Favorite emails view
-│   │   ├── SettingsActivity.java          # App settings and configuration
-│   │   ├── model/
-│   │   │   └── Email.java                 # Email data model
-│   │   ├── database/
-│   │   │   └── DatabaseHelper.java        # SQLite database management
-│   │   ├── network/
-│   │   │   └── ApiClient.java             # Groq API integration
-│   │   ├── adapter/
-│   │   │   └── EmailAdapter.java          # RecyclerView adapter
-│   │   ├── util/
-│   │   │   ├── Constants.java             # App constants
-│   │   │   ├── PreferenceManager.java     # SharedPreferences wrapper
-│   │   │   ├── NetworkUtils.java          # Network connectivity checks
-│   │   │   └── DateUtils.java             # Date formatting utilities
-│   ├── res/
-│   │   ├── layout/
-│   │   │   ├── activity_main.xml
-│   │   │   ├── activity_history.xml
-│   │   │   ├── activity_favorites.xml
-│   │   │   ├── activity_settings.xml
-│   │   │   └── item_email.xml
-│   │   ├── menu/
-│   │   │   ├── menu_main.xml
-│   │   │   ├── menu_history.xml
-│   │   │   └── menu_email_options.xml
-│   │   ├── drawable/            # Vector icons
-│   │   ├── values/
-│   │   │   ├── strings.xml       # String resources
-│   │   │   ├── colors.xml        # Color definitions
-│   │   │   ├── styles.xml        # Theme styles
-│   │   │   ├── arrays.xml        # Spinner arrays
-│   │   │   ├── dimens.xml        # Dimension values
-│   │   │   └── bools.xml         # Boolean resources
-│   │   └── xml/
-│   │       ├── preferences.xml
-│   │       ├── backup_rules.xml
-│   │       └── data_extraction_rules.xml
-│   └── AndroidManifest.xml
-├── build.gradle
-├── proguard-rules.pro
-└── settings.gradle
-```
-
-## Database Schema
-
-### Table: emails
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER PRIMARY KEY | Auto-increment ID |
-| recipient | TEXT NOT NULL | Email recipient name/email |
-| purpose | TEXT NOT NULL | Email purpose/subject |
-| notes | TEXT | Additional notes/context |
-| tone | TEXT | Email tone (Professional, Friendly, etc.) |
-| type | TEXT | Email type (Business, Job Application, etc.) |
-| length | TEXT | Email length (Short, Medium, Long) |
-| language | TEXT | Language of email (English, Spanish, etc.) |
-| subject | TEXT | Generated email subject |
-| email_body | TEXT | Generated email content |
-| date_created | LONG | Timestamp of creation |
-| favorite | INTEGER | 0 = not favorite, 1 = favorite |
-
-## API Integration
-
-### Groq API Configuration
-- **Base URL**: `https://api.groq.com/openai/v1/chat/completions`
-- **Model**: `llama-3.3-70b-versatile`
-- **Temperature**: 0.7 (balanced creativity)
-- **Max Tokens**: 2048
-- **Timeout**: 60 seconds
-- **Retry Logic**: Up to 2 retries with exponential backoff
-
-### API Error Handling
-- 429 (Rate Limited): Automatic retry with delay
-- 401 (Unauthorized): Invalid API key message
-- 500/503 (Server Error): Automatic retry with delay
-- Network errors: User-friendly error messages
-- Timeout handling: 60-second timeout with notification
-
-## Getting Started
+## Getting started
 
 ### Prerequisites
-- Android Studio 4.2 or later
-- JDK 11 or later
-- Android SDK 24+ (API level 24)
-- Groq API key (free at https://console.groq.com)
 
-### Installation
+- Android Studio with Android SDK 34
+- JDK 17
+- Android SDK platform and build tools for API 34
+- A Groq API key for AI features: <https://console.groq.com/keys>
 
-1. **Clone the repository**
+### Build a debug APK
+
+From the project root:
+
 ```bash
-git clone https://github.com/julisunkan/AI-Email-Writer.git
-cd AI-Email-Writer
+./gradlew assembleDebug
 ```
 
-2. **Open in Android Studio**
-   - File → Open → Select the project directory
-   - Wait for Gradle sync to complete
+On systems where the wrapper is not executable, run:
 
-3. **Get Groq API Key**
-   - Visit https://console.groq.com
-   - Sign up for a free account
-   - Generate an API key
-
-4. **Configure API Key**
-   - Launch the app
-   - Go to Settings
-   - Enter your Groq API key
-   - Click "Save API Key"
-
-5. **Build and Run**
-   - Click Run (Shift+F10) or select Run → Run 'app'
-   - Choose target device/emulator
-   - App will install and launch
-
-## Usage
-
-### Generating an Email
-
-1. **Fill in the form**:
-   - Enter recipient name or email
-   - Describe the email purpose
-   - (Optional) Add additional notes
-   - Select tone, type, length, and language
-
-2. **Generate**:
-   - Click "Generate Email" button
-   - Wait for AI to process (typically 5-15 seconds)
-   - Subject and body will appear below
-
-3. **Actions**:
-   - **Copy**: Copy generated email to clipboard
-   - **Share**: Share via email, messaging, etc.
-   - **Save**: Store in local database
-   - **Clear**: Reset form for new email
-
-### Managing Emails
-
-- **View History**: Tap History menu to see all generated emails
-- **Search**: Use search bar to find emails by recipient, purpose, subject, or content
-- **Favorites**: Mark emails as favorite for quick access
-- **Delete**: Long press or tap menu to delete individual emails
-- **Clear All**: Settings → Clear All History to delete everything
-
-## Prompt Engineering
-
-The app uses a carefully crafted prompt to ensure high-quality email generation:
-
-```
-You are an expert business communication assistant.
-
-Write a professional email.
-
-Recipient: {recipient}
-Purpose: {purpose}
-Email Type: {type}
-Tone: {tone}
-Length: {length}
-Language: {language}
-Additional Notes: {notes}
-
-Return ONLY two parts separated by '---SEPARATOR---':
-1. Subject line
-2. Email body
-
-Do not include any other text or explanation.
+```bash
+bash ./gradlew assembleDebug
 ```
 
-## Performance Optimizations
+The APK is written to:
 
-- **Database Queries**: Indexed for fast search
-- **Image Optimization**: Vector drawables for scalability
-- **Memory Management**: Proper cursor and database closing
-- **Thread Safety**: Background API calls on separate threads
-- **Lifecycle Handling**: Proper cleanup in onDestroy()
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
 
-## Security Considerations
+### Run the app
 
-- **API Key Storage**: Encrypted SharedPreferences (Android best practice)
-- **HTTPS Only**: All network calls use HTTPS
-- **Local Storage**: All data stored locally, never transmitted
-- **No Tracking**: No analytics or telemetry
-- **Permissions**: Only INTERNET and ACCESS_NETWORK_STATE required
+1. Open the project in Android Studio.
+2. Allow Gradle to sync and install the required SDK components.
+3. Select an Android 8.0+ device or emulator.
+4. Build and run the `app` configuration.
+5. Open **Settings → AI Settings** and save your own Groq API key before using
+   AI tools.
 
-## Known Limitations
+The API key is entered by the user and stored with encrypted app preferences.
+Never commit a key to source control or place one in Gradle files.
 
-- Requires internet connection for email generation (API calls)
-- API rate limits depend on Groq account tier
-- Maximum email body length: 2048 tokens
-- Language support limited to Groq API capabilities
+## AI integration
 
-## Troubleshooting
+The app uses Groq's OpenAI-compatible chat completions endpoint through the
+network layer. The default model is `llama-3.3-70b-versatile`; model and
+generation settings are exposed through AI Settings where supported.
 
-### API Key Issues
-- Ensure API key is valid: Check at https://console.groq.com
-- API key not saving: Check device storage permissions
-- Invalid format error: Remove extra spaces or special characters
+AI requests handle common offline, timeout, authorization, and service errors
+with user-facing messages. Resume creation, editing, local search, favorites,
+job tracking, and backup features do not require an AI key or network access.
 
-### Network Issues
-- No internet connection: Check Wi-Fi or mobile data
-- Timeout errors: Check internet speed or try again
-- Rate limit exceeded: Wait a few minutes before retrying
+## Development guidelines
 
-### Email Generation Issues
-- Empty response: Check API key and internet connection
-- Malformed email: Ensure purpose field is detailed
-- Unexpected format: Try adjusting tone or email type
+- Keep the Java-only project rule.
+- Keep API keys out of source code, logs, and documentation.
+- Run database work on background executors.
+- Keep user data local unless an explicit future integration requires otherwise.
+- Reuse string resources and Material Design 3 components.
+- Add validation and clear empty/error states to new screens.
+- Preserve the existing package name `com.airesumebuilder`.
 
-## Building for Release
+## Verification
 
-### Generate Signed APK
+Useful checks before submitting changes:
 
-1. **Build → Generate Signed Bundle/APK**
-2. **Select APK** (or Bundle for Play Store)
-3. **Create or select keystore**
-4. **Enter credentials and sign**
-5. **Select release buildType**
-6. **APK ready in app/release/**
+```bash
+bash ./gradlew assembleDebug
+```
 
-### ProGuard Configuration
-
-ProGuard rules are configured for:
-- GSON serialization
-- OkHttp/Okio
-- Model classes
-
-## Testing
-
-### Manual Testing Checklist
-- [ ] Generate email with all parameters
-- [ ] Test search functionality
-- [ ] Verify favorite toggling
-- [ ] Test copy/share features
-- [ ] Clear all history
-- [ ] Change API key in settings
-- [ ] Test offline mode
-- [ ] Verify database persistence
-- [ ] Test landscape orientation
-- [ ] Test with different email types/tones
-
-## Deployment
-
-The app is ready for deployment on Google Play Store:
-
-1. **Generate signed release APK** (see Building for Release)
-2. **Test on device thoroughly**
-3. **Create Play Store listing**
-4. **Upload signed APK**
-5. **Fill in app store details**
-6. **Submit for review**
+Replit does not provide an Android emulator in this workspace, so install the
+generated APK on an Android device or use Android Studio for interactive UI
+testing.
 
 ## License
 
-MIT License - See LICENSE file for details
-
-## Author
-
-Agbajelola Olasunkanmi Julius
-
-## Support
-
-For issues, feature requests, or questions:
-- Create an issue on GitHub
-- Email: julisunkan@gmail.com
-
-## Changelog
-
-### Version 1.0.0 (Initial Release)
-- AI email generation using Groq API
-- 20+ email types and 10 tones
-- Multi-language support (9 languages)
-- Email history and favorites
-- Search functionality
-- Material Design 3 UI
-- Dark mode support
-- SQLite database
-- Full offline support except API calls
-
-## Future Enhancements
-
-- [ ] Email templates
-- [ ] Batch email generation
-- [ ] Email scheduling
-- [ ] Cloud sync (optional)
-- [ ] Biometric authentication
-- [ ] Email signature management
-- [ ] Undo/Redo functionality
-- [ ] Advanced search filters
-- [ ] Email statistics dashboard
-- [ ] Integration with email clients
-
-## Acknowledgments
-
-- Groq for providing powerful AI API
-- Material Design team for design guidelines
-- Android development community
-- All contributors and users
-
----
-
-**Made with ❤️ for professional communication**
+See the repository license file for licensing terms.
